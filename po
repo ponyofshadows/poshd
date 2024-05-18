@@ -18,7 +18,6 @@ set -e
 # |__ event -> update_event()
 # |__ project -> update_project()
 # |__ disk -> update_disk()
-# |__ event | project -> exec_cd()
 # |__ event & project -> link()
 #
 # - some options call specfic functions
