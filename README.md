@@ -55,11 +55,11 @@ po -init
 #
 ## ' ' will be replaced by '_'
 po event one 
-po -t:24051810 event two
+po -e:24051810 event two
 ## create events using time words:[td,m,noon,a,n,now; ytd,tmrw,+7d,-6h]
-po -t:noon play vedio games
-po -t:tmrw+now play vedio games
-po -t:-3d2h play vedio games
+po -e:noon play vedio games
+po -e:tmrw+now play vedio games
+po -e:-3d2h play vedio games
 ## delete a event(Match the most recent event. The default search time range is the past 7 days)
 po -rm study math
 po -rm:30 study physics
@@ -93,9 +93,9 @@ po -p:deleted master plan
 # Archive Files
 #
 ## from normal path, move the file
-po -a ~/Downloads/example.png play vedio game
-po -a ~/Downloads/example.png -t:-2h play vedio game/screentshots/
-po -a ~/Downloads/example.png -p master plan/resources/img/
+po -f ~/Downloads/example.png -e:play vedio game
+po -f ~/Downloads/example.png -e:-2h play vedio game/screentshots/
+po -f ~/Downloads/example.png -p master plan/resources/img/
 ## from projects to events, create hard link
 po play vedio game -p master plan/resources/img/*
 
@@ -110,5 +110,5 @@ po -b
 ## Process backup regardless of minimum interval of each disks.
 po -b:all
 ## Recover form a disk
-po -r disk0
+po -r -d disk0
 ```
