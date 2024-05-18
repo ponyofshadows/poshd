@@ -58,12 +58,27 @@ po event one
 po -t:24051810 event two
 ## create events using time words:[td,m,noon,a,n,now; ytd,tmrw,+7d,-6h]
 po -t:noon play vedio games
-po -t:tmrw,now play vedio games
+po -t:tmrw+now play vedio games
 po -t:-3d2h play vedio games
 ## delete a event(Match the most recent event. The default search time range is the past 7 days)
 po -rm study math
 po -rm:30 study physics
 po -rm:whole study English
+
+#
+# View Events
+#
+## list events from $past_days_under_consideration days ago to $days_near_future days after. 
+po
+po -l
+## list events during certain dates
+po -l:whole
+po -l:0512,0519
+po -l:231024,0519
+po -l:ytd,tmrw+n
+## find events using keywords
+po -l vedio games
+po -l:whole vedio games
 
 #
 # Projects
@@ -78,17 +93,18 @@ po -p:deleted master plan
 # Archive Files
 #
 ## from normal path, move the file
-po -f ~/Downloads/example.png play vedio game
-po -f ~/Downloads/example.png -t:-2h play vedio game/screentshots/
-po -f ~/Downloads/example.png -p master plan/resources/img/
+po -a ~/Downloads/example.png play vedio game
+po -a ~/Downloads/example.png -t:-2h play vedio game/screentshots/
+po -a ~/Downloads/example.png -p master plan/resources/img/
 ## from projects to events, create hard link
 po play vedio game -p master plan/resources/img/*
 
 #
 # Backup
 #
-## add a new disk directory
+## add or give up a new disk directory
 po -d disk0
+po -d:hide disk0
 ## Process backup for all mounted backup directories
 po -b
 ## Process backup regardless of minimum interval of each disks.
