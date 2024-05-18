@@ -38,25 +38,61 @@ Below is the default configuration.
 archive_path: "~/all"
 minimum_cold_backups: 2
 days_near_future: 7
+past_days_under_consideration: 7
+minimum_backup_interval: 1
 ```
 
 ## Usage
 ```bash
 #
-# create a new event
+# Begin
+#
+## create necessary paths and files
+po -init
+
+#
+# New Events
 #
 ## ' ' will be replaced by '_'
 po event one 
-po -t 24051810 event two
-## create events using time words:[td,m,noon,a,n,now; ytd,tmrw,+7d,+-6h]
-po -t noon play vedio games
-po -t tmrw,now play vedio games
-po -t +-3d2h play vedio games
-## delete a event(Match the most recent event)
+po -t:24051810 event two
+## create events using time words:[td,m,noon,a,n,now; ytd,tmrw,+7d,-6h]
+po -t:noon play vedio games
+po -t:tmrw,now play vedio games
+po -t:-3d2h play vedio games
+## delete a event(Match the most recent event. The default search time range is the past 7 days)
 po -rm study math
+po -rm:30 study physics
+po -rm:whole study English
 
+#
+# Projects
+#
+## Create a new project or set status of a project
+po -p master plan
+po -p:active master plan
+po -p:cold master plan
+po -p:deleted master plan
 
+#
+# Archive Files
+#
+## from normal path, move the file
+po -f ~/Downloads/example.png play vedio game
+po -f ~/Downloads/example.png -t:-2h play vedio game/screentshots/
+po -f ~/Downloads/example.png -p master plan/resources/img/
+## from projects to events, create hard link
+po play vedio game -p master plan/resources/img/*
 
-
-## 
+#
+# Backup
+#
+## add a new disk directory
+po -d disk0
+## Process backup for all mounted backup directories
+po -b
+## Process backup regardless of minimum interval of each disks.
+po -b:all
+## Recover form a disk
+po -r disk0
 ```
