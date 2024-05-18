@@ -1,2 +1,62 @@
 # poshd
 A simple way to record life and archive files based on Linux Shell
+
+## Notion
+- Save all valuable files under `~/all/`
+- Archive files as projects under `all/proj`
+- Under `all/list/`, record life and archive files in chronological order, and you can associate files under `all/proj/` in the form of hard links.
+- Under `all/.bak`, store the necessary information when backing up files. Use rsync to back up to paths on other disks according to certain rules.
+- In addition to rsync, it only relies on some commands that come with the Linux shell, such as `cd` and `ls`.
+- File and pathnames contain almost all archive information.
+
+## Example Path Tree
+```
+all/
+|__ list/                            ##
+    |__ 24051809event1/              ## Date&Time + EventTitle
+    |__ 24051813event2@proj1/        ## There is a hard link to the file under a specific proj
+    |__ 24051821event3@proj1@proj2/  ##
+    |__ .24051911event4/             ## Use "." to mark events that will occur in the relatively distant future. 
+|__ proj/                            ##
+    |__ proj1/                       ##
+    |__ .proj2/                      ## If there are two or more backups, 
+                                     ## the original proj marked with "." will be deleted.
+    |__ ..proj3/                     ## The proj marked with ".." will be deleted from 
+                                     ## the original and backup files, but the empty path will be retained.
+|__ .bak/                            ##
+    |__ backup_info.yaml             ##
+    |__ mnt/                         ##
+        |__ .disk1/                  ## Disks that are no longer in use are marked with "."
+        |__ disk2/                   ##
+```
+
+## Configuratin
+Look for "$XDG\_CONFIG\_HOME/poshd/config.yaml", "~/.config/poshd/config.yaml" and "/etc/poshd/config.yaml" in turn as the user's configuration file.
+
+Below is the default configuration.
+```yaml
+archive_path: "~/all"
+minimum_cold_backups: 2
+days_near_future: 7
+```
+
+## Usage
+```bash
+#
+# create a new event
+#
+## ' ' will be replaced by '_'
+po event one 
+po -t 24051810 event two
+## create events using time words:[td,m,noon,a,n,now; ytd,tmrw,+7d,+-6h]
+po -t noon play vedio games
+po -t tmrw,now play vedio games
+po -t +-3d2h play vedio games
+## delete a event(Match the most recent event)
+po -rm study math
+
+
+
+
+## 
+```
