@@ -4,7 +4,7 @@
 #  https://github.com/ponyofshadows/poshd  #
 #==========================================#
 set -e
-po_path = "~/all"
+PO_PATH="$HOME/tmp/test/all"
 
 # ----------------
 ## Strategies for parsing parameters
@@ -28,31 +28,36 @@ po_path = "~/all"
 # |__ "-r" --> recover()
 # |__ "-rm" --> rm_event()
 # ----------------
-
-for arg in "$@"
-do
-  if [[ ! $arg == -* ]]; then
-    echo "content"
-  else  
-    # options
-    if [[ $arg == -e* ]]; then
-      echo "event"
-    elif [[ $arg == -p* ]]; then
-      echo "project"
-    elif [[ $arg == -f* ]]; then
-      echo "file"
-    elif [[ $arg == -d* ]]; then
-      echo "disk"
-    elif [[ $arg == -l* ]]; then
-      echo "keywords"
-    elif [[ $arg == -rm* ]]; then
-      echo "rm_event"
-    elif [[ $arg == -b* ]]; then
-      echo "backup"
-    elif [[ $arg == -r* ]]; then
-      echo "recover"
-    elif [[ $arg == -init* ]]; then
-      echo "init"
+if [ "$#" == 0 ]; then
+  # option "po -l"
+  echo "list"
+else
+  for arg in "$@"
+  do
+    if [[ ! $arg == -* ]]; then
+      # connect words into sentences
+      echo "content"
+    else  
+      # options
+      if [[ $arg == -e* ]]; then
+        echo "event"
+      elif [[ $arg == -p* ]]; then
+        echo "project"
+      elif [[ $arg == -f* ]]; then
+        echo "file"
+      elif [[ $arg == -d* ]]; then
+        echo "disk"
+      elif [[ $arg == -l* ]]; then
+        echo "keywords"
+      elif [[ $arg == -rm* ]]; then
+        echo "rm_event"
+      elif [[ $arg == -b* ]]; then
+        echo "backup"
+      elif [[ $arg == -r* ]]; then
+        echo "recover"
+      elif [[ $arg == -init* ]]; then
+        echo "init"
+      fi
     fi
-  fi
-done
+  done
+fi
