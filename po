@@ -7,7 +7,7 @@ set -e
 PO_PATH="$HOME/tmp/test/all"
 
 # ----------------
-## Strategies for parsing parameters
+## 1. Strategies for parsing parameters
 # 
 # - Adjacent non-option parameters will be concatenated into one object
 # |__ objects starting with "-e" or without preceding options -> (event, title, date, path)
@@ -28,17 +28,31 @@ PO_PATH="$HOME/tmp/test/all"
 # |__ "-r" --> recover()
 # |__ "-rm" --> rm_event()
 # ----------------
+CURRENT_OBJECT="event"
+CURRENT_CONTENT=""
+current_object=("event")
+object_list=()
+option_action_list=()
+
 if [ "$#" == 0 ]; then
-  # option "po -l"
+  # equivalent to option "po -l"
   echo "list"
 else
   for arg in "$@"
   do
     if [[ ! $arg == -* ]]; then
-      # connect words into sentences
+      # 1.2 If current arg is not a option
       echo "content"
     else  
-      # options
+      # 1.1 If current arg is a option
+      # |__ 1) complete last object
+      if [-n $CURRENT_CONTENT ]; then
+        current_object[1]=$CURRENT_CONTENT
+        CURRENT_CONTENT=""
+        object_list+=(current_object)
+      fi
+      current_object=("event")
+      # |__ 2) Specific operations
       if [[ $arg == -e* ]]; then
         echo "event"
       elif [[ $arg == -p* ]]; then
