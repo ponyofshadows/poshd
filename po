@@ -4,12 +4,13 @@
 #  https://github.com/ponyofshadows/poshd  #
 #==========================================#
 set -e
+po_path = "~/all"
 
 # ----------------
 ## Strategies for parsing parameters
 # 
 # - Adjacent non-option parameters will be concatenated into one object
-# |__ objects starting with "-e" or without preceding options -> (event, title date, path)
+# |__ objects starting with "-e" or without preceding options -> (event, title, date, path)
 # |__ objects starting with "-p" -> (project, title, action, path)
 # |__ objects starting with "-f" -> (file, path)
 # |__ objects starting with "-d" -> (disk, status)
@@ -28,3 +29,30 @@ set -e
 # |__ "-rm" --> rm_event()
 # ----------------
 
+for arg in "$@"
+do
+  if [[ ! $arg == -* ]]; then
+    echo "content"
+  else  
+    # options
+    if [[ $arg == -e* ]]; then
+      echo "event"
+    elif [[ $arg == -p* ]]; then
+      echo "project"
+    elif [[ $arg == -f* ]]; then
+      echo "file"
+    elif [[ $arg == -d* ]]; then
+      echo "disk"
+    elif [[ $arg == -l* ]]; then
+      echo "keywords"
+    elif [[ $arg == -rm* ]]; then
+      echo "rm_event"
+    elif [[ $arg == -b* ]]; then
+      echo "backup"
+    elif [[ $arg == -r* ]]; then
+      echo "recover"
+    elif [[ $arg == -init* ]]; then
+      echo "init"
+    fi
+  fi
+done
