@@ -9,11 +9,11 @@ set -e
 ## Strategies for parsing parameters
 # 
 # - Adjacent non-option parameters will be concatenated into one object
-# |__ objects starting with "-e" or without preceding options -> event
-# |__ objects starting with "-p" -> project
-# |__ objects starting with "-f" -> file
-# |__ objects starting with "-d" -> disk
-# |__ objects starting with "-l" -> keyword
+# |__ objects starting with "-e" or without preceding options -> (event, title date, path)
+# |__ objects starting with "-p" -> (project, title, action, path)
+# |__ objects starting with "-f" -> (file, path)
+# |__ objects starting with "-d" -> (disk, status)
+# |__ objects starting with "-l" -> (keyword, content, date_from, date_to)
 # - objects call specfic functions
 # |__ event -> update_event()
 # |__ project -> update_project()
@@ -27,3 +27,4 @@ set -e
 # |__ "-r" --> recover()
 # |__ "-rm" --> rm_event()
 # ----------------
+

@@ -23,15 +23,6 @@ all/
     |__ disk2/                       ##
 ```
 
-## Configuration
-Below is the default configuration.
-```bash
-po_archive_path= "~/all"
-po_days_near_future= 7
-po_past_days_under_consideration= 7
-po_minimum_backup_interval:= 1
-```
-
 ## Usage
 ```bash
 #
@@ -50,15 +41,14 @@ po -e:24051810 event two
 po -e:noon play vedio games
 po -e:tmrw+now play vedio games
 po -e:-3d2h play vedio games
-## delete a event(Match the most recent event. The default search time range is the past 7 days)
+## delete a event(Match the most recent event. The default search time range is this month)
 po -rm study math
-po -rm:30 study physics
 po -rm:whole study English
 
 #
 # View Events
 #
-## list events from $past_days_under_consideration days ago to $days_near_future days after. 
+## list recent events. 
 po
 po -l
 ## list events during certain dates
