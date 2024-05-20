@@ -51,25 +51,24 @@ else
         current_object[1]=$CURRENT_CONTENT
         CURRENT_CONTENT=""
         object_list+=("${current_object}")
+        current_object=("event")
       fi
-      current_object=("event")
       # |__ 2) Specific operations
       case $arg in
         -e*)
-          #current_object=("event")
-          :
+          current_object[0]="event"
           ;;
         -p*)
-          current_object=("project")
+          current_object[0]="project"
           ;;
         -f*)
-          current_object=("file")
+          current_object[0]="file"
           ;;
         -d*)
-          current_object=("disk")
+          current_object[0]="disk"
           ;;
         -l*)
-          current_object=("keywords")
+          current_object[0]="keywords"
           ;;
         -rm*)
           option_actions["remove"]=1
