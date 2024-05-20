@@ -13,7 +13,7 @@ source lib/functions.sh
 # 
 # - Adjacent non-option parameters will be concatenated into one object
 # |__ objects starting with "-e" or without preceding options -> (event, title,do_rm, date, path)
-# |__ objects starting with "-p" -> (project, title,do_rm, status, path)
+# |__ objects starting with "-p" -> (project, title, do_rm, status, path)
 # |__ objects starting with "-f" -> (file, path)
 # |__ objects starting with "-d" -> (disk, name, do_rm. status)
 # |__ objects starting with "-l" -> (keyword, content, date_from, date_to)
@@ -54,26 +54,36 @@ else
       fi
       current_object=("event")
       # |__ 2) Specific operations
-      if [[ $arg == -e* ]]; then
-        #current_object[0]="event"
-        echo "test"
-      elif [[ $arg == -p* ]]; then
-        current_object[0]="project"
-      elif [[ $arg == -f* ]]; then
-        current_object[0]="file"
-      elif [[ $arg == -d* ]]; then
-        current_object[0]="disk"
-      elif [[ $arg == -l* ]]; then
-        current_object[0]="keywords"
-      elif [[ $arg == -rm* ]]; then
-        option_actions["remove"]=1
-      elif [[ $arg == -b* ]]; then
-        option_actions["backup"]=1
-      elif [[ $arg == -r* ]]; then
-        option_actions["recover"]=1
-      elif [[ $arg == -init* ]]; then
-        po_init
-      fi
+      case $arg in
+        -e*)
+          #current_object=("event")
+          :
+          ;;
+        -p*)
+          current_object=("project")
+          ;;
+        -f*)
+          current_object=("file")
+          ;;
+        -d*)
+          current_object=("disk")
+          ;;
+        -l*)
+          current_object=("keywords")
+          ;;
+        -rm*)
+          option_actions["remove"]=1
+          ;;
+        -b*)
+          option_actions["backup"]=1
+          ;;
+        -r*)
+          option_actions["recover"]=1
+          ;;
+        -init*)
+          po_init
+          ;;
+      esac
     fi
   done
 fi
