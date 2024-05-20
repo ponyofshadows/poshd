@@ -56,6 +56,7 @@ else
       # |__ 2) Specific operations
       if [[ $arg == -e* ]]; then
         #current_object[0]="event"
+        echo "test"
       elif [[ $arg == -p* ]]; then
         current_object[0]="project"
       elif [[ $arg == -f* ]]; then
