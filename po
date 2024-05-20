@@ -6,33 +6,34 @@
 set -e
 PO_PATH="$HOME/tmp/test/all"
 
+source lib/functions.sh
+
 # ----------------
-## 1. Strategies for parsing parameters
+## Strategies for parsing parameters
 # 
 # - Adjacent non-option parameters will be concatenated into one object
-# |__ objects starting with "-e" or without preceding options -> (event, title, date, path)
-# |__ objects starting with "-p" -> (project, title, action, path)
+# |__ objects starting with "-e" or without preceding options -> (event, title,do_rm, date, path)
+# |__ objects starting with "-p" -> (project, title,do_rm, status, path)
 # |__ objects starting with "-f" -> (file, path)
-# |__ objects starting with "-d" -> (disk, status)
+# |__ objects starting with "-d" -> (disk, name, do_rm. status)
 # |__ objects starting with "-l" -> (keyword, content, date_from, date_to)
 # - objects call specfic functions
-# |__ event -> update_event()
-# |__ project -> update_project()
-# |__ disk -> update_disk()
-# |__ event & project -> link()
+# |__ event -> update_event
+# |__ project -> update_project
+# |__ disk -> update_disk
+# |__ event & project -> link
 #
 # - some options call specfic functions
-# |__ "-init" --> init()
-# |__ "-l" --> list()
-# |__ "-b" --> backup()
-# |__ "-r" --> recover()
-# |__ "-rm" --> rm_event()
+# |__ "-init" --> po_init
+# |__ "-l" --> list
+# |__ "-b" --> backup
+# |__ "-r" --> recover
+# |__ "-rm" --> rm_event
 # ----------------
-CURRENT_OBJECT="event"
 CURRENT_CONTENT=""
 current_object=("event")
 object_list=()
-option_action_list=()
+declare -A option_actions
 
 if [ "$#" == 0 ]; then
   # equivalent to option "po -l"
@@ -41,36 +42,36 @@ else
   for arg in "$@"
   do
     if [[ ! $arg == -* ]]; then
-      # 1.2 If current arg is not a option
+      # 2. If current arg is not a option
       echo "content"
     else  
-      # 1.1 If current arg is a option
+      # 1. If current arg is a option
       # |__ 1) complete last object
-      if [-n $CURRENT_CONTENT ]; then
+      if [ -n $CURRENT_CONTENT ]; then
         current_object[1]=$CURRENT_CONTENT
         CURRENT_CONTENT=""
-        object_list+=(current_object)
+        object_list+=("${current_object}")
       fi
       current_object=("event")
       # |__ 2) Specific operations
       if [[ $arg == -e* ]]; then
-        echo "event"
+        #current_object[0]="event"
       elif [[ $arg == -p* ]]; then
-        echo "project"
+        current_object[0]="project"
       elif [[ $arg == -f* ]]; then
-        echo "file"
+        current_object[0]="file"
       elif [[ $arg == -d* ]]; then
-        echo "disk"
+        current_object[0]="disk"
       elif [[ $arg == -l* ]]; then
-        echo "keywords"
+        current_object[0]="keywords"
       elif [[ $arg == -rm* ]]; then
-        echo "rm_event"
+        option_actions["remove"]=1
       elif [[ $arg == -b* ]]; then
-        echo "backup"
+        option_actions["backup"]=1
       elif [[ $arg == -r* ]]; then
-        echo "recover"
+        option_actions["recover"]=1
       elif [[ $arg == -init* ]]; then
-        echo "init"
+        po_init
       fi
     fi
   done

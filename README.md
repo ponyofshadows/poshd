@@ -67,8 +67,7 @@ po -l:whole vedio games
 po -p master plan
 po -p:active master plan
 po -p:hide master plan
-po -p:delete master plan
-po -p:status master plan
+po -rm -p master plan
 
 #
 # Archive Files
@@ -85,7 +84,7 @@ po play vedio game -p master plan/resources/img/*
 #
 ## add or give up a new disk directory
 po -d disk0
-po -d:hide disk0
+po -rm -d disk0
 ## Process backup for all mounted backup directories
 po -b
 ## Process backup regardless of minimum interval of each disks.
