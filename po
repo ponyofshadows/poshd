@@ -54,7 +54,7 @@ else
           # path
           current_object[3]="${CURRENT_CONTENT#*/}"
         else
-          current_object[1]=$CURRENT_CONTENT
+          current_object[1]="$CURRENT_CONTENT"
         fi
         CURRENT_CONTENT=""
         object_list+=("${current_object}")
