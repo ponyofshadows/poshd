@@ -12,10 +12,10 @@ source lib/functions.sh
 ## Strategies for parsing parameters
 # 
 # - Adjacent non-option parameters will be concatenated into one object
-# |__ objects starting with "-e" or without preceding options -> (event, title, do_rm, path, date)
-# |__ objects starting with "-p" -> (project, title, do_rm, path, status)
+# |__ objects starting with "-e" or without preceding options -> (event, title, path, date)
+# |__ objects starting with "-p" -> (project, title, path, status)
 # |__ objects starting with "-f" -> (file, path)
-# |__ objects starting with "-d" -> (disk, name, do_rm. status)
+# |__ objects starting with "-d" -> (disk, name, status)
 # |__ objects starting with "-l" -> (keyword, content, date_from, date_to)
 # - objects call specfic functions
 # |__ event -> update_event
@@ -28,7 +28,8 @@ source lib/functions.sh
 # |__ "-l" --> list
 # |__ "-b" --> backup
 # |__ "-r" --> recover
-# |__ "-rm" --> rm_event
+# |__ "-rm" --> rm_event (always remove frist object)
+# |__ "--debug" --> debug
 # ----------------
 CURRENT_CONTENT=""
 current_object=("event")
@@ -52,7 +53,7 @@ else
           # title
           current_object[1]="${CURRENT_CONTENT%%/*}"
           # path
-          current_object[3]="${CURRENT_CONTENT#*/}"
+          current_object[2]="${CURRENT_CONTENT#*/}"
         else
           current_object[1]="$CURRENT_CONTENT"
         fi
@@ -64,18 +65,30 @@ else
       case $arg in
         -e*)
           current_object[0]="event"
+          current_object[3]="${arg#*-e}"
+          current_object[3]="${current_object[4]#*:}"
+          current_object[3]=$(po_date "${current_object[4]}")
           ;;
         -p*)
           current_object[0]="project"
+          current_object[3]="${arg#*-p}"
+          current_object[3]="${current_object[4]#*:}"
           ;;
         -f*)
           current_object[0]="file"
           ;;
         -d*)
           current_object[0]="disk"
+          current_object[2]="${arg#*-d}"
+          current_object[2]="${current_object[3]#*:}"
           ;;
         -l*)
           current_object[0]="keywords"
+          current_object[2]="${arg#*-l}"
+          current_object[2]="${current_object[3]#*:}"
+          PERIOD=$(po_period "${current_object[3]}")
+          current_object[2]="${PERIOD%%,*}"
+          current_object[3]="${PERIOD#*,}"
           ;;
         -rm*)
           option_actions["remove"]="$arg"
@@ -88,6 +101,9 @@ else
           ;;
         -init)
           po_init
+          ;;
+        --debug)
+          option_actions["debug"]="$arg"
           ;;
       esac
     fi
