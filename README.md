@@ -18,9 +18,6 @@ all/
     |__ proj1/                       ##
 |__ .hidden_proj/                    ##
     |__ proj2/                       ## Deleting a hidden proj will not affect its backups on other disks
-|__ .mnt/                            ##
-    |__ .disk1/                      ## Disks that are no longer in use are marked with "."
-    |__ disk2/                       ##
 ```
 
 ## Usage
@@ -82,13 +79,8 @@ po play vedio game -p master plan/resources/img/*
 #
 # Backup
 #
-## add or give up a new disk directory
-po -d disk0
-po -rm -d disk0
-## Process backup for all mounted backup directories
-po -b
-## Process backup regardless of minimum interval of each disks.
-po -b:all
+## Process backup for mounted backup disks
+po -b "/mnt"
 ## Recover form a disk
-po -r -d disk0
+po -r "/mnt"
 ```

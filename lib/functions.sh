@@ -11,7 +11,7 @@ po_init(){
 }
 
 po_date(){
-  PO_UNIX_TIME=$(date +'%s')
+  PO_FORMATTED_TIME
   DATE_CODE_QUEUE=$1
   if [[ !( $DATE_CODE_QUEUE == +* || $DATE_CODE_QUEUE == -* ) ]]; then
     DATE_CODE_QUEUE="+$DATE_CODE_QUEUE"

@@ -15,21 +15,18 @@ source lib/functions.sh
 # |__ objects starting with "-e" or without preceding options -> (event, title, path, date)
 # |__ objects starting with "-p" -> (project, title, path, status)
 # |__ objects starting with "-f" -> (file, path)
-# |__ objects starting with "-d" -> (disk, name, status)
+# |__ objects starting with "-b" or "-r" -> (disk, path, action)
 # |__ objects starting with "-l" -> (keyword, content, date_from, date_to)
 # - objects call specfic functions
 # |__ event -> update_event
 # |__ project -> update_project
-# |__ disk -> update_disk
 # |__ event & project -> link
+# |__ disk -> backup || recover
 #
 # - some options call specfic functions
 # |__ "-init" --> po_init
 # |__ "-l" --> list
-# |__ "-b" --> backup
-# |__ "-r" --> recover
 # |__ "-rm" --> rm_event (always remove frist object)
-# |__ "--debug" --> debug
 # ----------------
 CURRENT_CONTENT=""
 current_object=("event")
@@ -78,11 +75,6 @@ else
         -f*)
           current_object[0]="file"
           ;;
-        -d*)
-          current_object[0]="disk"
-          current_object[2]="${arg#*-d}"
-          current_object[2]="${current_object[3]#*:}"
-          ;;
         -l*)
           current_object[0]="keywords"
           current_object[2]="${arg#*-l}"
@@ -95,15 +87,17 @@ else
           option_actions["remove"]="$arg"
           ;;
         -b)
-          option_actions["backup"]="$arg"
+          current_object[0]="disk"
+          current_object[2]="backup"
           ;;
         -r)
-          option_actions["recover"]="$arg"
+          current_object[0]="disk"
+          current_object[2]="recover"
           ;;
         -init)
           po_init
           ;;
-        --debug)
+        -debug)
           if [[ -n "$PO_DEBUG" ]]; then
             PO_DEBUG=""
           else
