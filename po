@@ -35,6 +35,7 @@ CURRENT_CONTENT=""
 current_object=("event")
 object_list=()
 declare -A option_actions
+PO_DEBUG=""
 
 if [[ "$#" == 0 ]]; then
   # equivalent to option "po -l"
@@ -62,7 +63,7 @@ else
         current_object=("event")
       fi
       # |__ 2) Specific operations
-      case $arg in
+      case "$arg" in
         -e*)
           current_object[0]="event"
           current_object[3]="${arg#*-e}"
@@ -103,7 +104,11 @@ else
           po_init
           ;;
         --debug)
-          option_actions["debug"]="$arg"
+          if [[ -n "$PO_DEBUG" ]]; then
+            PO_DEBUG=""
+          else
+            PO_DEBUG="on"
+          fi
           ;;
       esac
     fi
