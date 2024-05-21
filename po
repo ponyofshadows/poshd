@@ -6,7 +6,7 @@
 set -e
 PO_PATH="$HOME/tmp/test/all"
 
-source lib/functions.sh
+source lib/time.sh
 
 # ----------------
 ## Strategies for parsing parameters
@@ -96,7 +96,10 @@ else
           current_object["action"]="recover"
           ;;
         -init)
-          po_init
+          mkdir -p $PO_PATH/list
+          mkdir -p $PO_PATH/proj
+          mkdir -p $PO_PATH/.hidden_proj
+          echo "The path to archive files is '$PO_PATH'"
           ;;
         -debug)
           if [[ -n "$PO_DEBUG" ]]; then

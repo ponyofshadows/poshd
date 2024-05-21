@@ -63,9 +63,12 @@ po -l:whole vedio games
 ## Create a new project or do something on a project
 po -p master plan
 po -p:active master plan
-po -p:hide master plan
+po -p:hide shadow plan
 ## Deleting an active project will cause all copies of it to be deleted during backup; however, for a hidden project, it will be confirmed that at least one copy exists before deleting the original. 
 po -rm -p master plan
+po -p:rm shadow plan
+## Deleted hidden projects can be restored. The original will be restored when a copy is found on the backup disk
+po -p:restore shadow plan
 
 #
 # Archive Files
