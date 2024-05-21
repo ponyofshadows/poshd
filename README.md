@@ -64,6 +64,7 @@ po -l:whole vedio games
 po -p master plan
 po -p:active master plan
 po -p:hide master plan
+## Deleting an active project will cause all copies of it to be deleted during backup; however, for a hidden project, it will be confirmed that at least one copy exists before deleting the original. 
 po -rm -p master plan
 
 #

@@ -12,26 +12,26 @@ source lib/functions.sh
 ## Strategies for parsing parameters
 # 
 # - Adjacent non-option parameters will be concatenated into one object
-# |__ objects starting with "-e" or without preceding options -> (event, title, path, date)
-# |__ objects starting with "-p" -> (project, title, path, status)
-# |__ objects starting with "-f" -> (file, path)
-# |__ objects starting with "-b" or "-r" -> (disk, path, action)
-# |__ objects starting with "-l" -> (keyword, content, date_from, date_to)
+# |__ objects starting with "-e" or without preceding options -> (type:event, content, path, time, remove)
+# |__ objects starting with "-p" -> (type:project, content, path, status, remove)
+# |__ objects starting with "-f" -> (type:file, content, remove)
+# |__ objects starting with "-b" or "-r" -> (type:disk, content, action, remove)
+# |__ objects starting with "-l" -> (type:keyword, content, time_from, time_to, remove)
 # - objects call specfic functions
 # |__ event -> update_event
 # |__ project -> update_project
 # |__ event & project -> link
 # |__ disk -> backup || recover
+# |__ keywords -> search
 #
-# - some options call specfic functions
-# |__ "-init" --> po_init
-# |__ "-l" --> list
-# |__ "-rm" --> rm_event (always remove frist object)
+# - some special options
+# |__ "-init" 
+# |__ "-debug"
 # ----------------
 CURRENT_CONTENT=""
-current_object=("event")
+declare -A current_object
+current_object["type"]="event"
 object_list=()
-declare -A option_actions
 PO_DEBUG=""
 
 if [[ "$#" == 0 ]]; then
@@ -47,52 +47,53 @@ else
       # 1. If current arg is a option
       # |__ 1) complete last object
       if [[ -n "$CURRENT_CONTENT" ]]; then
-        if [[ "${current_object[0]}" == "event" || "${current_object[0]}" == "project" ]]; then
+        if [[ "${current_object['type']}" == "event" || "${current_object['type']}" == "project" ]]; then
           # title
-          current_object[1]="${CURRENT_CONTENT%%/*}"
+          current_object["content"]="${CURRENT_CONTENT%%/*}"
           # path
-          current_object[2]="${CURRENT_CONTENT#*/}"
+          current_object["path"]="${CURRENT_CONTENT#*/}"
         else
-          current_object[1]="$CURRENT_CONTENT"
+          current_object["content"]="$CURRENT_CONTENT"
         fi
         CURRENT_CONTENT=""
         object_list+=("${current_object}")
-        current_object=("event")
+        declare -A current_object
+        current_object["type"]="event"
       fi
       # |__ 2) Specific operations
       case "$arg" in
         -e*)
-          current_object[0]="event"
-          current_object[3]="${arg#*-e}"
-          current_object[3]="${current_object[4]#*:}"
-          current_object[3]=$(po_date "${current_object[4]}")
+          current_object["type"]="event"
+          current_object["time"]="${arg#*-e}"
+          current_object["time"]="${current_object['time']#*:}"
+          current_object["time"]=$(po_date "${current_object['time']}")
           ;;
         -p*)
-          current_object[0]="project"
-          current_object[3]="${arg#*-p}"
-          current_object[3]="${current_object[4]#*:}"
+          current_object["type"]="project"
+          current_object["status"]="${arg#*-p}"
+          current_object["status"]="${current_object['status']#*:}"
           ;;
         -f*)
-          current_object[0]="file"
+          current_object["type"]="file"
           ;;
         -l*)
-          current_object[0]="keywords"
-          current_object[2]="${arg#*-l}"
-          current_object[2]="${current_object[3]#*:}"
-          PERIOD=$(po_period "${current_object[3]}")
-          current_object[2]="${PERIOD%%,*}"
-          current_object[3]="${PERIOD#*,}"
+          current_object["title"]="keywords"
+          RAW_PERIOD="${arg#*-l}"
+          RAW_PERIOD="${RAW_PERIOD#*:}"
+          FORMATTED_PERIOD=$(po_period "$RAW_PERIOD")
+          current_object["time_from"]="${FORMATTED_PERIOD%%,*}"
+          current_object["time_to"]="${FORMATTED_PERIOD#*,}"
           ;;
         -rm*)
-          option_actions["remove"]="$arg"
+          current_object["remove"]="${arg#*:}"
           ;;
         -b)
-          current_object[0]="disk"
-          current_object[2]="backup"
+          current_object["type"]="disk"
+          current_object["action"]="backup"
           ;;
         -r)
-          current_object[0]="disk"
-          current_object[2]="recover"
+          current_object["type"]="disk"
+          current_object["action"]="recover"
           ;;
         -init)
           po_init
