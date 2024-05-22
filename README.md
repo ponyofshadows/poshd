@@ -34,7 +34,7 @@ po -init
 ## ' ' will be replaced by '_'
 po event one 
 po -e:24051810 event two
-## create events using time words:[td,m,noon,a,n,now; ytd,tmrw,+7d,-6h]
+## create events using time words:[m,noon,a,n,now, td, ytd,tmrw,+7d,-6h, etc..]
 po -e:noon play vedio games
 po -e:tmrw+now play vedio games
 po -e:-3d2h play vedio games
