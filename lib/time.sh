@@ -63,15 +63,26 @@ po_date(){
       ?mn)
         PO_FORMATTED_TIME="${PO_FORMATTED_TIME:0:6}24"
         ;;
-      [\+\-]?[0-9]+[dh])
-        ;;
       [^0-9][0-9][0-9])
+        PO_FORMATTED_TIME="${PO_FORMATTED_TMRW:0:6}${CURRENT_DATE_CODE:1}"
         ;;
       [^0-9][0-9][0-9][0-9][0-9])
+        PO_FORMATTED_TIME="${PO_FORMATTED_TMRW:0:4}${CURRENT_DATE_CODE:1}"
         ;;
       [^0-9][0-9][0-9][0-9][0-9][0-9][0-9])
+        PO_FORMATTED_TIME="${PO_FORMATTED_TMRW:0:2}${CURRENT_DATE_CODE:1}"
         ;;
       [^0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9])
+        PO_FORMATTED_TIME="${CURRENT_DATE_CODE:1}"
+        ;;
+      [\+\-]?[0-9]+[dh])
+        PO_CHANGE_DAY=$(echo "$CURRENT_DATE_CODE" | grep -oP '\d+(?=d)')
+        PO_CHANGE_TIME=$(echo "$CURRENT_DATE_CODE" | grep -oP '\d+(?=h)')
+        if [[ "$CURRENT_DATE_CODE" == -* ]]; then
+          PO_CHANGE_DAY=$((- PO_CHANGE_DAY))
+          PO_CHANGE_TIME=$((- PO_CHANGE_TIME))
+        fi
+        PO_FORMATTED_TIME=$(date -d "${PO_FORMATTED_TIME:0:4}-${PO_FORMATTED_TIME:4:2}-${PO_FORMATTED_TIME:6:2} + $PO_CHANGE_DAY day + $PO_CHANGE_TIME hours" +"%y%m%d%H")
         ;;
     esac
     # DEBUG{
@@ -81,7 +92,7 @@ po_date(){
     fi
     # }DEUBG
   done
-  return $PO_UNIX_TIME
+  return $PO_FORMATTED_TIME
 }
 
 po_period(){
