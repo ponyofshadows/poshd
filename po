@@ -14,9 +14,9 @@ source lib/time.sh
 # - Adjacent non-option parameters will be concatenated into one object
 # |__ objects starting with "-e" or without preceding options -> (type:event, content, path, time, remove)
 # |__ objects starting with "-p" -> (type:project, content, path, status, remove)
-# |__ objects starting with "-f" -> (type:file, content, remove)
-# |__ objects starting with "-b" or "-r" -> (type:disk, content, action, remove)
-# |__ objects starting with "-l" -> (type:keyword, content, time_from, time_to, remove)
+# |__ objects starting with "-f" -> (type:file, content)
+# |__ objects starting with "-b" or "-r" -> (type:disk, content, action)
+# |__ objects starting with "-l" -> (type:keyword, content, time_from, time_to)
 # - objects call specfic functions
 # |__ event -> update_event
 # |__ project -> update_project
