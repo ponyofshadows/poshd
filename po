@@ -42,12 +42,16 @@ else
   do
     if [[ ! "$arg" == -* ]]; then
       # 2. If current arg is not a option
-      echo "content"
+      if [[ -n "$CURRENT_CONTENT" ]]; then
+        CURRENT_CONTENT+="_$arg"
+      else
+        CURRENT_CONTENT="$arg"
+      fi
     else  
       # 1. If current arg is a option
       # |__ 1) complete last object
       if [[ -n "$CURRENT_CONTENT" ]]; then
-        if [[ "${current_object['type']}" == "event" || "${current_object['type']}" == "project" ]]; then
+        if [[ "${current_object["type"]}" == "event" || "${current_object["type"]}" == "project" ]]; then
           # title
           current_object["content"]="${CURRENT_CONTENT%%/*}"
           # path
@@ -56,6 +60,9 @@ else
           current_object["content"]="$CURRENT_CONTENT"
         fi
         CURRENT_CONTENT=""
+        if [[ "${current_object["type"]}" == "event" && "${current_object["time"]}" == "" ]]; then
+          current_object["time"]=$(po_date "now")
+        fi
         object_list+=("${current_object}")
         declare -A current_object
         current_object["type"]="event"
@@ -65,13 +72,13 @@ else
         -e*)
           current_object["type"]="event"
           current_object["time"]="${arg#*-e}"
-          current_object["time"]="${current_object['time']#*:}"
-          current_object["time"]=$(po_date "${current_object['time']}")
+          current_object["time"]="${current_object["time"]#*:}"
+          current_object["time"]=$(po_date "${current_object["time"]}")
           ;;
         -p*)
           current_object["type"]="project"
           current_object["status"]="${arg#*-p}"
-          current_object["status"]="${current_object['status']#*:}"
+          current_object["status"]="${current_object["status"]#*:}"
           ;;
         -f)
           current_object["type"]="file"
@@ -112,5 +119,11 @@ else
           ;;
       esac
     fi
+    # DEBUG{
+    if [[ -n "$PO_DEBUG" ]]; then
+      echo "[DEBUG](po) \$arg=$arg" >&2
+      echo "[DEBUG](po) \$CURRENT_CONTENT=$CURRENT_CONTENT" >&2
+    fi
+    # }DEBUG
   done
 fi

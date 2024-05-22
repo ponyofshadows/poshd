@@ -1,3 +1,4 @@
+#!/bin/bash
 #
 ## time.sh
 #
@@ -11,8 +12,8 @@ po_date(){
   fi
   # DEBUG{
   if [[ -n "$PO_DEBUG" ]]; then
-    echo "[DEBUG] function:po_date"
-    echo "[DEBUG] \$time_code_queue=$time_code_queue"
+    echo "[DEBUG](time.po_date) function:po_date" >&2
+    echo "[DEBUG](time.po_date) \$time_code_queue=$time_code_queue" >&2
   fi
   # }DEBUG
   while [[ -n "$time_code_queue" ]]; do
@@ -25,7 +26,7 @@ po_date(){
     fi
     case "$current_time_code" in
       ?now)
-        local formatted_now=$(date +'%y%m%d%h')
+        local formatted_now=$(date +'%y%m%d%H')
         formatted_time=$formatted_now
         ;;
       ?td)
@@ -88,12 +89,12 @@ po_date(){
     esac
     # DEBUG{
     if [[ -n "$PO_DEBUG" ]]; then
-      echo "[DEBUG] \$current_time_code=$current_time_code"
-      echo "[DEBUG] \$formatted_time=$formatted_time"
+      echo "[DEBUG](time.po_date) \$current_time_code=$current_time_code" >&2
+      echo "[DEBUG](time.po_date) \$formatted_time=$formatted_time" >&2
     fi
     # }DEUBG
   done
-  return "$formatted_time"
+  echo "$formatted_time"
 }
 
 po_period(){
@@ -107,7 +108,7 @@ po_period(){
     time_from=$(po_date ${period_input%%,*})
     time_to=$(po_date ${period_input#*,})
   fi
-  return "$time_from,$time_to"
+  echo "$time_from,$time_to"
 }
 
 
