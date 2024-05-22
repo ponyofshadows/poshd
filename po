@@ -73,7 +73,7 @@ else
           current_object["status"]="${arg#*-p}"
           current_object["status"]="${current_object['status']#*:}"
           ;;
-        -f*)
+        -f)
           current_object["type"]="file"
           ;;
         -l*)
