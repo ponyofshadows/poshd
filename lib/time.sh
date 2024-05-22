@@ -93,11 +93,21 @@ po_date(){
     fi
     # }DEUBG
   done
-  return $formatted_time
+  return "$formatted_time"
 }
 
 po_period(){
-  local time_to=$(po_date )
+  local period_input="$1"
+  local time_from=""
+  local time_to=""
+  if [[ period_input == "whole" ]]; then
+    time_from="00010100"
+    time_to="99123123"
+  else
+    time_from=$(po_date ${period_input%%,*})
+    time_to=$(po_date ${period_input#*,})
+  fi
+  return "$time_from,$time_to"
 }
 
 
