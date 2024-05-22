@@ -3,100 +3,101 @@
 #
 
 po_date(){
-  PO_FORMATTED_TIME=$(date +'%y%m%d%h')
-  DATE_CODE_QUEUE=$1
-  if [[ !( $DATE_CODE_QUEUE == +* || $DATE_CODE_QUEUE == -* ) ]]; then
-    DATE_CODE_QUEUE="+$DATE_CODE_QUEUE"
+  local formatted_time=$(date +'%y%m%d%h')
+  local time_code_queue=$1
+  local current_time_code=""
+  if [[ !( $time_code_queue == +* || $time_code_queue == -* ) ]]; then
+    time_code_queue="+$time_code_queue"
   fi
   # DEBUG{
   if [[ -n "$PO_DEBUG" ]]; then
     echo "[DEBUG] function:po_date"
-    echo "[DEBUG] \$DATE_CODE_QUEUE=$DATE_CODE_QUEUE"
+    echo "[DEBUG] \$time_code_queue=$time_code_queue"
   fi
   # }DEBUG
-  while [[ -n "$DATE_CODE_QUEUE" ]]; do
-    if [[ $DATE_CODE_QUEUE =~ ^([+-])(.*?)([+-].*|$) ]]; then
-      CURRENT_DATE_CODE="${BASH_REMATCH[1]}${BASH_REMATCH[2]}"
-      DATE_CODE_QUEUE="${BASH_REMATCH[3]}"  
+  while [[ -n "$time_code_queue" ]]; do
+    if [[ $time_code_queue =~ ^([+-])(.*?)([+-].*|$) ]]; then
+      current_time_code="${BASH_REMATCH[1]}${BASH_REMATCH[2]}"
+      time_code_queue="${BASH_REMATCH[3]}"  
     else
-      CURRENT_DATE_CODE="$string"
-      DATE_CODE_QUEUE=""
+      current_time_code="$string"
+      time_code_queue=""
     fi
-    case "$CURRENT_DATE_CODE" in
+    case "$current_time_code" in
       ?now)
-        PO_FORMATTED_NOW=$(date +'%y%m%d%h')
-        PO_FORMATTED_TIME=$PO_FORMATTED_NOW
+        local formatted_now=$(date +'%y%m%d%h')
+        formatted_time=$formatted_now
         ;;
       ?td)
-        PO_FORMATTED_TD=$(date +'%y%m%d')
-        PO_FORMATTED_TIME="$PO_FORMATTED_TD${PO_FORMATTED_TIME:6}"
+        local formatted_td=$(date +'%y%m%d')
+        formatted_time="$formatted_td${formatted_time:6}"
         ;;
       ?ytd)
-        PO_FORMATTED_YTD=$(date -d 'yesterday' +'%y%m%d')
-        PO_FORMATTED_TIME="$PO_FORMATTED_YTD${PO_FORMATTED_TIME:6}"
+        local formatted_ytd=$(date -d 'yesterday' +'%y%m%d')
+        formatted_time="$formatted_ytd${formatted_time:6}"
         ;;
       ?tmrw)
-        PO_FORMATTED_TMRW=$(date -d 'tomorrow' +'%y%m%d')
-        PO_FORMATTED_TIME="$PO_FORMATTED_TMRW${PO_FORMATTED_TIME:6}"
+        local formatted_tmrw=$(date -d 'tomorrow' +'%y%m%d')
+        formatted_time="$formatted_tmrw${formatted_time:6}"
         ;;
       ?em)
-        PO_FORMATTED_TIME="${PO_FORMATTED_TIME:0:6}03"
+        formatted_time="${formatted_time:0:6}03"
         ;;
       ?sr)
-        PO_FORMATTED_TIME="${PO_FORMATTED_TIME:0:6}06"
+        formatted_time="${formatted_time:0:6}06"
         ;;
       ?m)
-        PO_FORMATTED_TIME="${PO_FORMATTED_TIME:0:6}09"
+        formatted_time="${formatted_time:0:6}09"
         ;;
       ?noon)
-        PO_FORMATTED_TIME="${PO_FORMATTED_TIME:0:6}12"
+        formatted_time="${formatted_time:0:6}12"
         ;;
       ?a)
-        PO_FORMATTED_TIME="${PO_FORMATTED_TIME:0:6}15"
+        formatted_time="${formatted_time:0:6}15"
         ;;
       ?ss)
-        PO_FORMATTED_TIME="${PO_FORMATTED_TIME:0:6}18"
+        formatted_time="${formatted_time:0:6}18"
         ;;
       ?n|?twi)
-        PO_FORMATTED_TIME="${PO_FORMATTED_TIME:0:6}21"
+        formatted_time="${formatted_time:0:6}21"
         ;;
       ?mn)
-        PO_FORMATTED_TIME="${PO_FORMATTED_TIME:0:6}24"
+        formatted_time="${formatted_time:0:6}24"
         ;;
       [^0-9][0-9][0-9])
-        PO_FORMATTED_TIME="${PO_FORMATTED_TMRW:0:6}${CURRENT_DATE_CODE:1}"
+        formatted_time="${formatted_time:0:6}${current_time_code:1}"
         ;;
       [^0-9][0-9][0-9][0-9][0-9])
-        PO_FORMATTED_TIME="${PO_FORMATTED_TMRW:0:4}${CURRENT_DATE_CODE:1}"
+        formatted_time="${formatted_time:0:4}${current_time_code:1}"
         ;;
       [^0-9][0-9][0-9][0-9][0-9][0-9][0-9])
-        PO_FORMATTED_TIME="${PO_FORMATTED_TMRW:0:2}${CURRENT_DATE_CODE:1}"
+        formatted_time="${formatted_time:0:2}${current_time_code:1}"
         ;;
       [^0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9])
-        PO_FORMATTED_TIME="${CURRENT_DATE_CODE:1}"
+        formatted_time="${current_time_code:1}"
         ;;
       [\+\-]?[0-9]+[dh])
-        PO_CHANGE_DAY=$(echo "$CURRENT_DATE_CODE" | grep -oP '\d+(?=d)')
-        PO_CHANGE_TIME=$(echo "$CURRENT_DATE_CODE" | grep -oP '\d+(?=h)')
-        if [[ "$CURRENT_DATE_CODE" == -* ]]; then
-          PO_CHANGE_DAY=$((- PO_CHANGE_DAY))
-          PO_CHANGE_TIME=$((- PO_CHANGE_TIME))
+        local change_day=$(echo "$current_time_code" | grep -oP '\d+(?=d)')
+        local change_time=$(echo "$current_time_code" | grep -oP '\d+(?=h)')
+        if [[ "$current_time_code" == -* ]]; then
+          change_day=$((- change_day))
+          change_time=$((- change_time))
         fi
-        PO_FORMATTED_TIME=$(date -d "${PO_FORMATTED_TIME:0:4}-${PO_FORMATTED_TIME:4:2}-${PO_FORMATTED_TIME:6:2} + $PO_CHANGE_DAY day + $PO_CHANGE_TIME hours" +"%y%m%d%H")
+        formatted_time=$(date -d "20${formatted_time:0:2}-${formatted_time:2:2}-${formatted_time:4:2} ${formatted_time:6:2}:00 + $change_day day + $change_time hours" +"%y%m%d%H")
         ;;
     esac
     # DEBUG{
     if [[ -n "$PO_DEBUG" ]]; then
-      echo "[DEBUG] \$CURRENT_DATE_CODE=$CURRENT_DATE_CODE"
-      echo "[DEBUG] \$PO_FORMATTED_TIME=$PO_FORMATTED_TIME"
+      echo "[DEBUG] \$current_time_code=$current_time_code"
+      echo "[DEBUG] \$formatted_time=$formatted_time"
     fi
     # }DEUBG
   done
-  return $PO_FORMATTED_TIME
+  return $formatted_time
 }
 
 po_period(){
-
+  local time_to=$(po_date )
 }
 
 
