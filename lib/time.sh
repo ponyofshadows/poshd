@@ -3,7 +3,7 @@
 #
 
 po_date(){
-  local formatted_time=$(date +'%y%m%d%h')
+  local formatted_time=$(date +'%y%m%d%H')
   local time_code_queue=$1
   local current_time_code=""
   if [[ !( $time_code_queue == +* || $time_code_queue == -* ) ]]; then
