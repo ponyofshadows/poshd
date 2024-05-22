@@ -104,8 +104,10 @@ else
         -debug)
           if [[ -n "$PO_DEBUG" ]]; then
             PO_DEBUG=""
+            echo "[DEBUG] debug off"
           else
             PO_DEBUG="on"
+            echo "[DEBUG] debug on"
           fi
           ;;
       esac
