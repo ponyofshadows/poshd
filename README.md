@@ -38,9 +38,8 @@ po -e:24051810 event two
 po -e:noon play vedio games
 po -e:tmrw+now play vedio games
 po -e:-3d2h play vedio games
-## delete a event(Match the most recent event. The default search time range is this month)
+## delete a event(Match the most recent event.
 po -rm study math
-po -rm:whole study English
 
 #
 # View Events

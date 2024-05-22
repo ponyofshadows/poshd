@@ -84,8 +84,8 @@ else
           current_object["time_from"]="${FORMATTED_PERIOD%%,*}"
           current_object["time_to"]="${FORMATTED_PERIOD#*,}"
           ;;
-        -rm*)
-          current_object["remove"]="${arg#*:}"
+        -rm)
+          current_object["remove"]="y"
           ;;
         -b)
           current_object["type"]="disk"
