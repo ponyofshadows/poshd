@@ -11,10 +11,9 @@ po_date(){
     time_code_queue="+$time_code_queue"
   fi
   # DEBUG{
-  if [[ -n "$PO_DEBUG" ]]; then
-    echo "[DEBUG](time.po_date) function:po_date" >&2
-    echo "[DEBUG](time.po_date) \$time_code_queue=$time_code_queue" >&2
-  fi
+  #if [[ -n "$PO_DEBUG" ]]; then
+    #echo "[DEBUG](time.po_date) \$time_code_queue=$time_code_queue" >&2
+  #fi
   # }DEBUG
   while [[ -n "$time_code_queue" ]]; do
     if [[ $time_code_queue =~ ^([+-])(.*?)([+-].*|$) ]]; then
@@ -101,13 +100,19 @@ po_period(){
   local period_input="$1"
   local time_from=""
   local time_to=""
-  if [[ period_input == "whole" ]]; then
+  if [[ "$period_input" == "whole" ]]; then
     time_from="00010100"
     time_to="99123123"
   else
     time_from=$(po_date ${period_input%%,*})
     time_to=$(po_date ${period_input#*,})
   fi
+  # DEBUG{
+    if [[ -n PO_DEBUG ]]; then 
+      echo "[DEBUG](time.po_period) \$period_input=$period_input" >&2
+      echo "[DEBUG](time.po_period) period.echo=$time_from,$time_to" >&2
+    fi
+  # }DEBUG
   echo "$time_from,$time_to"
 }
 
