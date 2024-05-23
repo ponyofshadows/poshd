@@ -77,14 +77,14 @@ po_date(){
       [^0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9])
         formatted_time="${current_time_code:1}"
         ;;
-      [\+\-]?[0-9]+[dh])
+      [+-][0-9]*[dh]*)
         local change_day=$(echo "$current_time_code" | grep -oP '\d+(?=d)')
-        local change_time=$(echo "$current_time_code" | grep -oP '\d+(?=h)')
+        local change_hour=$(echo "$current_time_code" | grep -oP '\d+(?=h)')
+        local change_time_by_hour=$((change_day * 24 + change_hour)) 
         if [[ "$current_time_code" == -* ]]; then
-          change_day=$((- change_day))
-          change_time=$((- change_time))
+          change_time_by_hour=$((- change_time_by_hour))
         fi
-        formatted_time=$(date -d "20${formatted_time:0:2}-${formatted_time:2:2}-${formatted_time:4:2} ${formatted_time:6:2}:00 + $change_day day + $change_time hours" +"%y%m%d%H")
+        formatted_time=$(date -u -d "20${formatted_time:0:2}-${formatted_time:2:2}-${formatted_time:4:2} ${formatted_time:6:2}:00 UTC + $change_time_by_hour hours" +"%y%m%d%H")
         ;;
     esac
     # DEBUG{
