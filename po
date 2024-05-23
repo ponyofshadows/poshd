@@ -132,5 +132,7 @@ else
   done
 fi
 # DEBUG{
-if [[ -n "$PO_DEBUG" ]]
+if [[ -n "$PO_DEBUG" ]]; then
+  echo "[DEBUG](po) ***object list***"
+fi
 # }DEBUG
