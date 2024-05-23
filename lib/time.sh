@@ -108,7 +108,7 @@ po_period(){
     time_to=$(po_date ${period_input#*,})
   fi
   # DEBUG{
-    if [[ -n PO_DEBUG ]]; then 
+    if [[ -n "$PO_DEBUG" ]]; then 
       echo "[DEBUG](time.po_period) \$period_input=$period_input" >&2
       echo "[DEBUG](time.po_period) period.echo=$time_from,$time_to" >&2
     fi

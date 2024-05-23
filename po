@@ -2,6 +2,7 @@
 #==========================================#
 #                 poshd                    #
 #  https://github.com/ponyofshadows/poshd  #
+#              version 0.0                 #
 #==========================================#
 set -e
 PO_PATH="$HOME/tmp/test/all"
@@ -130,3 +131,6 @@ else
     # }DEBUG
   done
 fi
+# DEBUG{
+if [[ -n "$PO_DEBUG" ]]
+# }DEBUG
