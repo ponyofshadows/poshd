@@ -10,6 +10,29 @@ PO_PATH="$HOME/tmp/test/all"
 source lib/time.sh
 
 # ----------------
+## Segments
+# ----------------
+po_complete_object(){
+  if [[ -n "$current_content" ]]; then
+    if [[ "${current_object["type"]}" == "event" || "${current_object["type"]}" == "project" ]]; then
+      # title
+      current_object["content"]="${current_content%%/*}"
+      # path
+      current_object["path"]="${current_content#*/}"
+    else
+      current_object["content"]="$current_content"
+    fi
+  fi
+  if [[ (-n "$current_content") || "${current_object[type]}" == "keywords" ]]; then
+    current_content=""
+    object_list+=("${current_object}")
+    unset current_object
+    declare -A current_object
+    current_object["type"]="event"
+  fi
+}
+
+# ----------------
 ## Strategies for parsing parameters
 # 
 # - Adjacent non-option parameters will be concatenated into one object
@@ -29,7 +52,7 @@ source lib/time.sh
 # |__ "-init" 
 # |__ "-debug"
 # ----------------
-CURRENT_CONTENT=""
+current_content=""
 declare -A current_object
 current_object["type"]="event"
 object_list=()
@@ -45,32 +68,16 @@ else
   for arg in "$@"
   do
     if [[ ! "$arg" == -* ]]; then
-      # 2. If current arg is not a option
-      if [[ -n "$CURRENT_CONTENT" ]]; then
-        CURRENT_CONTENT+="_$arg"
+      # 1. If current arg is not a option
+      if [[ -n "$current_content" ]]; then
+        current_content+="_$arg"
       else
-        CURRENT_CONTENT="$arg"
+        current_content="$arg"
       fi
     else  
-      # 1. If current arg is a option
+      # 2. If current arg is a option
       # |__ 1) complete last object
-      if [[ -n "$CURRENT_CONTENT" ]]; then
-        if [[ "${current_object["type"]}" == "event" || "${current_object["type"]}" == "project" ]]; then
-          # title
-          current_object["content"]="${CURRENT_CONTENT%%/*}"
-          # path
-          current_object["path"]="${CURRENT_CONTENT#*/}"
-        else
-          current_object["content"]="$CURRENT_CONTENT"
-        fi
-        CURRENT_CONTENT=""
-        if [[ "${current_object["type"]}" == "event" && "${current_object["time"]}" == "" ]]; then
-          current_object["time"]=$(po_date "now")
-        fi
-        object_list+=("${current_object}")
-        declare -A current_object
-        current_object["type"]="event"
-      fi
+      po_complete_object
       # |__ 2) Specific operations
       case "$arg" in
         -e*)
@@ -124,15 +131,23 @@ else
       esac
     fi
     # DEBUG{
-    #if [[ -n "$PO_DEBUG" ]]; then
-     #echo "[DEBUG](po) \$arg=$arg" >&2
-     #echo "[DEBUG](po) \$CURRENT_CONTENT=$CURRENT_CONTENT" >&2
-    #fi
+    if [[ -n "$PO_DEBUG" ]]; then
+     echo "[DEBUG](po) \$arg=$arg" >&2
+     echo "[DEBUG](po) \$current_content=$current_content" >&2
+    fi
     # }DEBUG
   done
+  # one more thing
+  po_complete_object
 fi
 # DEBUG{
 if [[ -n "$PO_DEBUG" ]]; then
   echo "[DEBUG](po) ***object list***"
+  for current_object in "${object_list[@]}"; do
+    echo "object: ${current_object["type"]}" >&2
+    for key in "${!current_object[@]}"; do
+      echo "|__ $key: ${current_object[$key]}" >&2
+    done
+  done
 fi
 # }DEBUG
