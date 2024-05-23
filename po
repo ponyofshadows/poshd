@@ -39,7 +39,7 @@ if [[ "$#" == 0 ]]; then
   current_object["type"]="keywords"
   current_object["time_from"]="00010100"
   current_object["time_to"]="99123123"
-  object_list+=("${$current_object}")
+  object_list+=("${current_object}")
 else
   for arg in "$@"
   do
