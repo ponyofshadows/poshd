@@ -49,8 +49,9 @@ po_complete_object(){
 # |__ keywords -> search
 #
 # - some special options
-# |__ "-init" 
-# |__ "-debug"
+# |__ "--init" 
+# |__ "--debug"
+# |__ "--rm"
 # ----------------
 current_content=""
 declare -A current_object
@@ -102,7 +103,7 @@ else
           current_object["time_from"]="${FORMATTED_PERIOD%%,*}"
           current_object["time_to"]="${FORMATTED_PERIOD#*,}"
           ;;
-        -rm)
+        --rm)
           current_object["remove"]="y"
           ;;
         -b)
@@ -113,13 +114,13 @@ else
           current_object["type"]="disk"
           current_object["action"]="recover"
           ;;
-        -init)
+        --init)
           mkdir -p $PO_PATH/list
           mkdir -p $PO_PATH/proj
           mkdir -p $PO_PATH/.hidden_proj
           echo "The path to archive files is '$PO_PATH'"
           ;;
-        -debug)
+        --debug)
           if [[ -n "$PO_DEBUG" ]]; then
             PO_DEBUG=""
             echo "[DEBUG] debug off"
