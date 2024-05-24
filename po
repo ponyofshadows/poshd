@@ -5,9 +5,9 @@
 #              version 0.0                 #
 #==========================================#
 set -e
-PO_PATH="$HOME/tmp/test/all"
+export PO_PATH="$HOME/tmp/test/all"
 
-source lib/time.sh
+. lib/time.sh
 
 # ----------------
 ## Segments
