@@ -18,15 +18,20 @@ po_complete_object(){
       # title
       current_object["content"]="${current_content%%/*}"
       # path
-      current_object["path"]="${current_content#*/}"
+      if [[ "$current_content" == */* ]]; then
+        current_object["path"]="${current_content#*/}"
+      fi
     else
       current_object["content"]="$current_content"
     fi
   fi
   if [[ (-n "$current_content") || "${current_object[type]}" == "keywords" ]]; then
     current_content=""
-    object_key_list+=("${!current_object[@]}")
-    object_value_list+=("${current_object[@]}")
+    echo "key: ${!current_object[@]}"
+    echo "value: ${current_object[@]}"
+    local object_count=${#object_key_list[@]}
+    object_key_list[object_count]="${!current_object[@]}"
+    object_value_list[object_count]="${current_object[@]}"
     unset current_object
     declare -A current_object
     current_object["type"]="event"
@@ -146,11 +151,14 @@ fi
 # DEBUG{
 if [[ -n "$PO_DEBUG" ]]; then
   echo "[DEBUG](po) ***object list***"
-  object_count=${#object_key_list}
+  object_count=${#object_key_list} 
   object_index=0
-  while (( object_index++ < object_count )); do
+  echo "--------"
+  while (( object_index < object_count )); do
     echo "${object_key_list[object_index]}"
     echo "${object_value_list[object_index]}"
+    let object_index+=1
+    echo "--------"
   done
 fi
 # }DEBUG
