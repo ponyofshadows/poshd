@@ -17,10 +17,10 @@ else
 fi
 ## false
 # 2) indirect reference
-array_name="array0"
+array_name="array0[@]"
 echo "indirect reference of array0:"
 declare -A current_array
-eval current_array_value=\${$array_name[@]}
+eval current_array_value=\${$array_name}
 echo "current_array_value=$current_array_value"
 ## only the keys or the values
 
