@@ -87,10 +87,10 @@ po_date(){
         ;;
     esac
     # DEBUG{
-    if [[ -n "$PO_DEBUG" ]]; then
-      echo "[DEBUG](time.po_date) \$current_time_code=$current_time_code" >&2
-      echo "[DEBUG](time.po_date) \$formatted_time=$formatted_time" >&2
-    fi
+    #if [[ -n "$PO_DEBUG" ]]; then
+      #echo "[DEBUG](time.po_date) \$current_time_code=$current_time_code" >&2
+      #echo "[DEBUG](time.po_date) \$formatted_time=$formatted_time" >&2
+    #fi
     # }DEUBG
   done
   echo "$formatted_time"
@@ -108,10 +108,10 @@ po_period(){
     time_to=$(po_date ${period_input#*,})
   fi
   # DEBUG{
-    if [[ -n "$PO_DEBUG" ]]; then 
-      echo "[DEBUG](time.po_period) \$period_input=$period_input" >&2
-      echo "[DEBUG](time.po_period) period.echo=$time_from,$time_to" >&2
-    fi
+    #if [[ -n "$PO_DEBUG" ]]; then 
+      #echo "[DEBUG](time.po_period) \$period_input=$period_input" >&2
+      #echo "[DEBUG](time.po_period) period.echo=$time_from,$time_to" >&2
+    #fi
   # }DEBUG
   echo "$time_from,$time_to"
 }
