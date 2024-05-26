@@ -25,7 +25,8 @@ po_complete_object(){
   fi
   if [[ (-n "$current_content") || "${current_object[type]}" == "keywords" ]]; then
     current_content=""
-    object_list+=("${current_object}")
+    object_key_list+=("${!current_object[@]}")
+    object_value_list+=("${current_object[@]}")
     unset current_object
     declare -A current_object
     current_object["type"]="event"
@@ -56,7 +57,8 @@ po_complete_object(){
 current_content=""
 declare -A current_object
 current_object["type"]="event"
-object_list=()
+object_key_list=()
+object_value_list=()
 PO_DEBUG=""
 
 if [[ "$#" == 0 ]]; then
@@ -144,11 +146,11 @@ fi
 # DEBUG{
 if [[ -n "$PO_DEBUG" ]]; then
   echo "[DEBUG](po) ***object list***"
-  for current_object in "${object_list[@]}"; do
-    echo "object: ${current_object["type"]}" >&2
-    for key in "${!current_object[@]}"; do
-      echo "|__ $key: ${current_object[$key]}" >&2
-    done
+  object_count=${#object_key_list}
+  object_index=0
+  while (( object_index++ < object_count )); do
+    echo "${object_key_list[object_index]}"
+    echo "${object_value_list[object_index]}"
   done
 fi
 # }DEBUG
