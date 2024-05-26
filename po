@@ -30,6 +30,7 @@ po_complete_object(){
     echo "key: ${!current_object[@]}"
     echo "value: ${current_object[@]}"
     local object_count=${#object_key_list[@]}
+    echo "object_count=$object_count"
     object_key_list[object_count]="${!current_object[@]}"
     object_value_list[object_count]="${current_object[@]}"
     unset current_object
@@ -103,7 +104,7 @@ else
           current_object["type"]="file"
           ;;
         -l*)
-          current_object["title"]="keywords"
+          current_object["type"]="keywords"
           RAW_PERIOD="${arg#*-l}"
           RAW_PERIOD="${RAW_PERIOD#*:}"
           FORMATTED_PERIOD=$(po_period "$RAW_PERIOD")
@@ -151,14 +152,14 @@ fi
 # DEBUG{
 if [[ -n "$PO_DEBUG" ]]; then
   echo "[DEBUG](po) ***object list***"
-  object_count=${#object_key_list} 
+  object_count=${#object_key_list[@]} 
   object_index=0
-  echo "--------"
   while (( object_index < object_count )); do
+    echo "--------$object_index"
     echo "${object_key_list[object_index]}"
     echo "${object_value_list[object_index]}"
     let object_index+=1
-    echo "--------"
   done
+  echo "--------"
 fi
 # }DEBUG
