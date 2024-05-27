@@ -11,7 +11,7 @@ export PO_PATH="$HOME/tmp/test/all"
 . lib/time.sh
 
 # ----------------
-## Strategies for parsing parameters
+## Strategies for Parsing Parameters
 # 
 # - Adjacent non-option parameters will be concatenated into one object
 # |__ objects starting with "-e" or without preceding options -> (type:event, content, path, time, remove)
@@ -133,3 +133,37 @@ if [[ -n "$PO_DEBUG" ]]; then
   echo "--------"
 fi
 # }DEBUG
+
+# ----------------
+## Operate on Objects
+# ----------------
+declare -a current_object_keys
+declare -a current_object_values
+
+declare -a event_paths
+declare -a file_paths
+declare -a project_paths
+
+object_count=${#object_key_list[@]} 
+object_index=0
+while (( object_index < object_count )); do
+  IFS=' ' read -r -a current_object_keys <<< "${object_key_list[object_index]}"
+  IFS=' ' read -r -a current_object_values <<< "${object_value_list[object_index]}"
+  unset current_object
+  declare -A current_object
+  declare key_count=${#current_object_keys[@]}
+  declare key_index=0
+  while (( key_index < key_count )); do
+    current_object["${current_object_keys[$key_index]}"]="${current_object_values[$key_index]}"
+    let key_index+=1
+  done
+  # DEBUG{
+  if [[ -n "$PO_DEBUG" ]]; then
+    echo "[DEBUG](po) cur_key: ${!current_object[@]}"
+    echo "[DEBUG](po) cur_value: ${current_object[@]}"
+  fi
+  # }DEBUG
+
+  let object_index+=1
+done
+
