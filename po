@@ -171,27 +171,26 @@ while (( object_index < object_count )); do
         current_object["time"]=$(po_date "")
       fi
       # Does this event exist? 
-      event_path_pattern="${PO_PATH}/event/${current_object["time"]:0:6}[0-9][0-9]${current_object["content"]}"
-      if [ -d "$event_path_pattern" ]; then
-        for event_path in $event_path_pattern; do
-          current_object["time"]=$(echo "$event_path" | sed -n 's/.*proj\/\([0-9]\{8\}\).*/\1/p')
-          break
-        done
+      event_paths=( ${PO_PATH}/event/${current_object["time"]:0:6}[0-9][0-9]${current_object["content"]} )
+      event_path=${event_paths[0]}
+      if [[ -d "$event_path" ]]; then
+        current_object["time"]=$(echo "$event_path" | sed -n 's/.*proj\/\([0-9]\{8\}\).*/\1/p')
         if [[ -n "${current_object["remove"]}" ]]; then
-          rm -rf "${PO_PATH}/event/${current_object["time"]}/${current_object["content"]}"
+          rm -rf "$event_path"
+          echo "event deleted: ${current_object["time"]}${current_object["content"]}"
         else
           echo "event was created earlier today: ${current_object["time"]}${current_object["content"]}"
           if [[ -n "${current_object["path"]}" ]]; then
-            mkdir -p "${PO_PATH}/event/${current_object["time"]}/${current_object["content"]}/${current_object["path"]}"
-            event_paths+=("${PO_PATH}/event/${current_object["time"]}/${current_object["content"]}/${current_object["path"]}")
+            mkdir -p "${event_path}/${current_object["path"]}"
+            event_paths+=("${event_path}/${current_object["path"]}")
           fi
         fi
       else 
         if [[ "${current_object["remove"]}" == "" ]]; then
-          mkdir -p "${PO_PATH}/proj/${current_object["time"]}${current_object["content"]}/${current_object["path"]}"
+          mkdir -p "${PO_PATH}/event/${current_object["time"]}${current_object["content"]}/${current_object["path"]}"
           echo "new event: ${current_object["time"]}${current_object["content"]}"
           if [[ -n "${current_object["path"]}" ]]; then
-            event_paths+=("${PO_PATH}/proj/${current_object["time"]}${current_object["content"]}/${current_object["path"]}")
+            event_paths+=("${PO_PATH}/event/${current_object["time"]}${current_object["content"]}/${current_object["path"]}")
           fi
         fi
       fi
