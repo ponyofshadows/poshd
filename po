@@ -248,13 +248,16 @@ while (( object_index < object_count )); do
       ;;
     file)
       declare does_file_exist=""
-      for current_file in ${current_object["content"]}; do
-      does_file_exist="y"
-        if [[ "${current_object["remove"]}" == "y" ]]; then
-          rm -rf "$current_file"
-          echo "deleted file: $current_file"
-        else
-          file_paths+=("$current_file")
+      declare -a current_files=( ${current_object["content"]} )
+      for current_file in $current_files; do
+        if [[ -e "$current_file" ]]; then
+          does_file_exist="y"
+          if [[ "${current_object["remove"]}" == "y" ]]; then
+            rm -rf "$current_file"
+            echo "deleted file: $current_file"
+          else
+            file_paths+=("$current_file")
+          fi
         fi
       done
       if [[ "$does_file_exist" == "" ]]; then
