@@ -174,7 +174,7 @@ while (( object_index < object_count )); do
       event_paths=( ${PO_PATH}/event/${current_object["time"]:0:6}[0-9][0-9]${current_object["content"]} )
       event_path=${event_paths[0]}
       if [[ -d "$event_path" ]]; then
-        current_object["time"]=$(echo "$event_path" | sed -n 's/.*proj\/\([0-9]\{8\}\).*/\1/p')
+        current_object["time"]=$(echo "$event_path" | sed -n 's/.*event\/\([0-9]\{8\}\).*/\1/p')
         if [[ -n "${current_object["remove"]}" ]]; then
           rm -rf "$event_path"
           echo "event deleted: ${current_object["time"]}${current_object["content"]}"
