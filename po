@@ -16,7 +16,7 @@ export PO_PATH="$HOME/tmp/test/all"
 # - Adjacent non-option parameters will be concatenated into one object
 # |__ objects starting with "-e" or without preceding options -> (type:event, content, path, time, remove)
 # |__ objects starting with "-p" -> (type:project, content, path, status, remove)
-# |__ objects starting with "-f" -> (type:file, content)
+# |__ objects starting with "-f" -> (type:file, content, remove)
 # |__ objects starting with "-b" or "-r" -> (type:disk, content, action)
 # |__ objects starting with "-l" -> (type:keyword, content, time_from, time_to)
 # - Objects call specfic functions
@@ -69,6 +69,9 @@ else
           current_object["type"]="project"
           current_object["status"]="${arg#*-p}"
           current_object["status"]="${current_object["status"]#*:}"
+          if [[ "${current_object["status"]}" == "rm" ]]; then
+            current_object["remove"]="y"
+          fi
           ;;
         -f)
           current_object["type"]="file"
@@ -141,8 +144,8 @@ declare -a current_object_keys
 declare -a current_object_values
 
 declare -a event_paths
+declare -a proj_paths
 declare -a file_paths
-declare -a project_paths
 
 object_count=${#object_key_list[@]} 
 object_index=0
@@ -171,17 +174,17 @@ while (( object_index < object_count )); do
         current_object["time"]=$(po_date "")
       fi
       # Does this event exist? 
-      event_paths=( ${PO_PATH}/event/${current_object["time"]:0:6}[0-9][0-9]${current_object["content"]} )
-      event_path=${event_paths[0]}
-      if [[ -d "$event_path" ]]; then
-        current_object["time"]=$(echo "$event_path" | sed -n 's/.*event\/\([0-9]\{8\}\).*/\1/p')
+      event_floders=( ${PO_PATH}/event/${current_object["time"]:0:6}[0-9][0-9]${current_object["content"]} )
+      event_floder=${event_floders[0]}
+      if [[ -d "$event_floder" ]]; then
+        current_object["time"]=$(echo "$event_floder" | sed -n 's/.*event\/\([0-9]\{8\}\).*/\1/p')
         if [[ -n "${current_object["remove"]}" ]]; then
-          rm -rf "$event_path"
+          rm -rf "$event_floder"
           echo "event deleted: ${current_object["time"]}${current_object["content"]}"
         else
           echo "event was created earlier today: ${current_object["time"]}${current_object["content"]}"
           if [[ -n "${current_object["path"]}" ]]; then
-            mkdir -p "${event_path}/${current_object["path"]}"
+            mkdir -p "${event_floder}/${current_object["path"]}"
             event_paths+=("${event_path}/${current_object["path"]}")
           fi
         fi
@@ -196,7 +199,53 @@ while (( object_index < object_count )); do
       fi
       ;;
     project)
-      :
+      proj_floder="${PO_PATH}/proj/${current_object["content"]}"
+      hidden_proj_floder="${PO_PATH}/.hidden_proj/${current_object["content"]}"
+      declare proj_current_status
+
+      if [[ -d "$proj_floder" ]]; then
+        proj_current_status="active"
+        echo "project exists: ${current_object["content"]}"
+        if [[ "${current_object["remove"]}" ==  "y" ]]; then
+          rm -rf "$proj_floder"
+          echo "deleted project: ${current_object["content"]}"
+        elif [[ "${current_object[status]}" == "hide" ]]; then
+          mv "$proj_floder" "$hidden_proj_floder"
+          proj_current_status="hide"
+          echo "hide project: ${current_object["content"]}"
+        fi
+      elif [[ -d "$hidden_proj_floder" ]]; then
+        proj_current_status="hide"
+        echo "hidden project exists: ${current_object["content"]}"
+        if [[ "${current_object["remove"]}" ==  "y" ]]; then
+          rm -rf "$hidden_proj_floder"
+          echo "deleted hidden project: ${current_object["content"]}"
+        elif [[ "${current_object[status]}" == "active" ]]; then
+          mv "$hidden_proj_floder" "$proj_floder"
+          proj_current_status="active"
+          echo "active project: ${current_object["content"]}"
+        fi
+      elif [[ "${current_object["remove"]}" == "y" ]]; then
+        proj_current_status=""
+      elif [[ "${current_object["status"]}" == "hide" ]]; then
+        mkdir -p "$hidden_proj_floder"
+        proj_current_status="hide"
+        echo "create hidden project: ${current_object["content"]}"
+      else
+        mkdir -p "$proj_floder"
+        proj_current_status="active"
+        echo "create project: ${current_object["content"]}"
+      fi
+
+      if [[ (-n "${current_object["path"]}") && ( -n "$proj_current_status") ]]; then
+        if [[ "$proj_current_status" == "active" ]]; then
+          mkdir -p "${proj_floder}/${current_object["path"]}"
+          proj_paths+=("${proj_floder}/${current_object["path"]}")
+        else
+          mkdir -p "${hidden_proj_floder}/${current_object["path"]}"
+          proj_paths+=("${hidden_proj_floder}/${current_object["path"]}")
+        fi
+      fi
       ;;
     file)
       :
