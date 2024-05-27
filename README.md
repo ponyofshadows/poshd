@@ -4,13 +4,13 @@ A simple way to record life and archive files based on Linux Shell
 ## Abstract
 - Save all valuable files under `~/all/`
 - Archive files as projects under `all/proj`
-- Under `all/list/`, record life and archive files in chronological order, and you can associate files under `all/proj/` in the form of hard links.
+- Under `all/event/`, record life and archive files in chronological order, and you can associate files under `all/proj/` in the form of hard links.
 - In addition to `rsync` for backup, it only relies on some commands that come with the Linux shell, such as `cd`, `ls` and `date`.
 
 ## Example Path Tree
 ```
 all/
-|__ list/                            ##
+|__ event/                            ##
     |__ 24051809event1/              ## Date&Time + EventTitle
     |__ 24051813event2@proj1/        ## There exist hard links
     |__ 24051821event3@proj1@proj2/  ##
@@ -38,7 +38,7 @@ po -e:24051810 event two
 po -e:noon play vedio games
 po -e:tmrw+now play vedio games
 po -e:-3d2h play vedio games
-## delete a event(Match the most recent event.
+## delete a event(Match a event today.)
 po -rm study math
 
 #

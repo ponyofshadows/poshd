@@ -2,7 +2,7 @@
 #==========================================#
 #                 poshd                    #
 #  https://github.com/ponyofshadows/poshd  #
-#              version 0.0                 #
+#              version 0.1                 #
 #==========================================#
 set -e
 export PO_PATH="$HOME/tmp/test/all"
@@ -93,7 +93,7 @@ else
           current_object["action"]="recover"
           ;;
         --init)
-          mkdir -p $PO_PATH/list
+          mkdir -p $PO_PATH/event
           mkdir -p $PO_PATH/proj
           mkdir -p $PO_PATH/.hidden_proj
           echo "The path to archive files is '$PO_PATH'"
@@ -149,6 +149,7 @@ object_index=0
 while (( object_index < object_count )); do
   IFS=' ' read -r -a current_object_keys <<< "${object_key_list[object_index]}"
   IFS=' ' read -r -a current_object_values <<< "${object_value_list[object_index]}"
+  let object_index+=1
   unset current_object
   declare -A current_object
   declare key_count=${#current_object_keys[@]}
@@ -163,7 +164,50 @@ while (( object_index < object_count )); do
     echo "[DEBUG](po) cur_value: ${current_object[@]}"
   fi
   # }DEBUG
-
-  let object_index+=1
+  case "${current_object["type"]}" in 
+    event)
+      # Time
+      if [[ "${current_object["time"]}" == "" ]]; then
+        current_object["time"]=$(po_date "")
+      fi
+      # Does this event exist? 
+      event_path_pattern="${PO_PATH}/event/${current_object["time"]:0:6}[0-9][0-9]${current_object["content"]}"
+      if [ -d "$event_path_pattern" ]; then
+        for event_path in $event_path_pattern; do
+          current_object["time"]=$(echo "$event_path" | sed -n 's/.*proj\/\([0-9]\{8\}\).*/\1/p')
+          break
+        done
+        if [[ -n "${current_object["remove"]}" ]]; then
+          rm -rf "${PO_PATH}/event/${current_object["time"]}/${current_object["content"]}"
+        else
+          echo "event was created earlier today: ${current_object["time"]}${current_object["content"]}"
+          if [[ -n "${current_object["path"]}" ]]; then
+            mkdir -p "${PO_PATH}/event/${current_object["time"]}/${current_object["content"]}/${current_object["path"]}"
+            event_paths+=("${PO_PATH}/event/${current_object["time"]}/${current_object["content"]}/${current_object["path"]}")
+          fi
+        fi
+      else 
+        if [[ "${current_object["remove"]}" == "" ]]; then
+          mkdir -p "${PO_PATH}/proj/${current_object["time"]}${current_object["content"]}/${current_object["path"]}"
+          echo "new event: ${current_object["time"]}${current_object["content"]}"
+          if [[ -n "${current_object["path"]}" ]]; then
+            event_paths+=("${PO_PATH}/proj/${current_object["time"]}${current_object["content"]}/${current_object["path"]}")
+          fi
+        fi
+      fi
+      ;;
+    project)
+      :
+      ;;
+    file)
+      :
+      ;;
+    keywords)
+      :
+      ;;
+    disk)
+      :
+      ;;
+  esac
 done
 
