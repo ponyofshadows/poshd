@@ -44,8 +44,7 @@ if [[ "$#" == 0 ]]; then
   current_object["time_to"]="99123123"
   object_list+=("${current_object}")
 else
-  for arg in "$@"
-  do
+  for arg in "$@"; do
     if [[ ! "$arg" == -* ]]; then
       # 1. If current arg is not a option
       if [[ -n "$current_content" ]]; then
@@ -248,7 +247,19 @@ while (( object_index < object_count )); do
       fi
       ;;
     file)
-      :
+      declare does_file_exist=""
+      for current_file in ${current_object["content"]}; do
+      does_file_exist="y"
+        if [[ "${current_object["remove"]}" == "y" ]]; then
+          rm -rf "$current_file"
+          echo "deleted file: $current_file"
+        else
+          file_paths+=("$current_file")
+        fi
+      done
+      if [[ "$does_file_exist" == "" ]]; then
+        echo "file doesn't exist: ${current_object["content"]}"
+      fi
       ;;
     keywords)
       :
