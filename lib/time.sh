@@ -119,6 +119,11 @@ po_period(){
       period=""
       ;;
   esac
+  local period_text_length=${#period}
+  while (( $period_text_length < 8 )); do
+    period="${period}[0-9]"
+    let period_text_length++
+  done
   echo "$period"
 }
 
