@@ -292,7 +292,7 @@ while (( object_index < object_count )); do
     disk)
       if [[ -d "${current_object["content"]}" ]]; then
         if [[ "${current_object}" == "backup" ]]; then
-           
+          rsync ""           
         else
 
         fi
