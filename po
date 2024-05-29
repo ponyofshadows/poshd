@@ -2,7 +2,7 @@
 #==========================================#
 #                 poshd                    #
 #  https://github.com/ponyofshadows/poshd  #
-#              version 0.1                 #
+#              version 0.2                 #
 #==========================================#
 set -e
 export PO_PATH="$HOME/tmp/test/all"
@@ -158,10 +158,10 @@ while (( object_index < object_count )); do
     let key_index+=1
   done
   # DEBUG{
-  if [[ -n "$PO_DEBUG" ]]; then
-    echo "[DEBUG](po) cur_key: ${!current_object[@]}"
-    echo "[DEBUG](po) cur_value: ${current_object[@]}"
-  fi
+  #if [[ -n "$PO_DEBUG" ]]; then
+    #echo "[DEBUG](po) cur_key: ${!current_object[@]}"
+    #echo "[DEBUG](po) cur_value: ${current_object[@]}"
+  #fi
   # }DEBUG
   case "${current_object["type"]}" in 
     event)
@@ -264,7 +264,7 @@ while (( object_index < object_count )); do
       fi
       ;;
     keywords)
-      kw_event_pattern="${current_object["period"]}*${current_object["content"]}*"
+      kw_event_pattern="${PO_PATH}/event/${current_object["period"]}${current_object["content"]}*"
       event_results=( $(eval echo $kw_event_pattern) )
       kw_project_pattern="${PO_PATH}/proj/*${current_object["content"]}*"
       project_results=( $(eval echo $kw_project_pattern) )
@@ -272,15 +272,21 @@ while (( object_index < object_count )); do
       hidden_project_results=( $(eval echo $kw_hidden_project_pattern) )
       
       echo "--------- search results --------"
-      for event_result in "${event_results[@]}"; do
-        echo "$event_result"
-      done
-      for project_result in "${project_results[@]}"; do
-        echo "$project_result"
-      done
-      for hidden_project_result in "${hidden_project_results[@]}"; do
-        echo "$hidden_project_result"
-      done
+      if [[ -d "${event_results[0]}" ]]; then
+        for event_result in "${event_results[@]}"; do
+          echo "$event_result"
+        done
+      fi
+      if [[ -d "${project_results[0]}" ]]; then
+        for project_result in "${project_results[@]}"; do
+          echo "$project_result"
+        done
+      fi
+      if [[ -d "${hidden_project_results[0]}" ]]; then
+        for hidden_project_result in "${hidden_project_results[@]}"; do
+          echo "$hidden_project_result"
+        done
+      fi
       echo "---------------------------------"
       ;;
     disk)
