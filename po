@@ -250,7 +250,8 @@ while (( object_index < object_count )); do
       declare does_file_exist=""
       current_files=( $(eval echo ${current_object["content"]}) )
       echo "${current_files[@]}"
-      for current_file in $current_files; do
+      for current_file in "${current_files[@]}"; do
+        echo "$current_file"
         if [[ -e "$current_file" ]]; then
           does_file_exist="y"
           if [[ "${current_object["remove"]}" == "y" ]]; then
