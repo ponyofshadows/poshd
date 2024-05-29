@@ -45,13 +45,18 @@ po -rm study math
 # View Events
 #
 ## list recent events. 
-po
-po -l
+po # equal to `po -l:m`
+po -l # equal to `po -l:m`
 ## list events during certain dates
+po -l:H
+po -l:24052012
+po -l:d
+po -l:240530
+po -l:m
+po -l:2405
+po -l:y
+po -l:24
 po -l:whole
-po -l:0512,0519
-po -l:231024,0519
-po -l:ytd,tmrw+n
 ## find events using keywords
 po -l vedio games
 po -l:whole vedio games

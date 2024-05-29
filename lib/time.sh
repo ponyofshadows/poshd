@@ -97,23 +97,28 @@ po_date(){
 }
 
 po_period(){
-  local period_input="$1"
-  local time_from=""
-  local time_to=""
-  if [[ "$period_input" == "whole" ]]; then
-    time_from="00010100"
-    time_to="99123123"
-  else
-    time_from=$(po_date ${period_input%%,*})
-    time_to=$(po_date ${period_input#*,})
-  fi
-  # DEBUG{
-    #if [[ -n "$PO_DEBUG" ]]; then 
-      #echo "[DEBUG](time.po_period) \$period_input=$period_input" >&2
-      #echo "[DEBUG](time.po_period) period.echo=$time_from,$time_to" >&2
-    #fi
-  # }DEBUG
-  echo "$time_from,$time_to"
+  local current_time=$(po_date "")
+  local period
+  case "$1" in
+    H)
+      period="$current_time" 
+      ;;
+    d)
+      period="${current_time:0:6}"
+      ;;
+    ""|m)
+      period="${current_time:0:4}"
+      ;;
+    y)
+      period="${current_time:0:2}"
+      ;;
+    [0-9][0-9]|[0-9][0-9]0-9][0-9]|[0-9][0-9][0-9][0-9][0-9][0-9]|[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9])
+      period="$1"
+      ;;
+    *)
+      period=""
+      ;;
+  esac
+  echo "$period"
 }
-
 

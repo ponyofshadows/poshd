@@ -18,7 +18,7 @@ export PO_PATH="$HOME/tmp/test/all"
 # |__ objects starting with "-p" -> (type:project, content, path, status, remove)
 # |__ objects starting with "-f" -> (type:file, content, remove)
 # |__ objects starting with "-b" or "-r" -> (type:disk, content, action)
-# |__ objects starting with "-l" -> (type:keyword, content, time_from, time_to)
+# |__ objects starting with "-l" -> (type:keyword, content, period)
 # - Objects call specfic functions
 # |__ event -> update_event
 # |__ project -> update_project
@@ -38,10 +38,9 @@ object_value_list=()
 PO_DEBUG=""
 
 if [[ "$#" == 0 ]]; then
-  # equivalent to option "po -l"
+  # equivalent to option "po -l:m"
   current_object["type"]="keywords"
-  current_object["time_from"]="00010100"
-  current_object["time_to"]="99123123"
+  current_object["period"]=$(po_period "m")
   object_list+=("${current_object}")
 else
   for arg in "$@"; do
@@ -77,11 +76,9 @@ else
           ;;
         -l*)
           current_object["type"]="keywords"
-          RAW_PERIOD="${arg#*-l}"
-          RAW_PERIOD="${RAW_PERIOD#*:}"
-          FORMATTED_PERIOD=$(po_period "$RAW_PERIOD")
-          current_object["time_from"]="${FORMATTED_PERIOD%%,*}"
-          current_object["time_to"]="${FORMATTED_PERIOD#*,}"
+          raw_period="${arg#*-l}"
+          raw_period="${raw_period#*:}"
+          current_object["period"]=$(po_period "$raw_period")
           ;;
         --rm)
           current_object["remove"]="y"
@@ -267,6 +264,7 @@ while (( object_index < object_count )); do
       fi
       ;;
     keywords)
+      event_results=( ${PO_PATH}/event/${current_object["time"]:0:6}[0-9][0-9]${current_object["content"]} )
       :
       ;;
     disk)
