@@ -248,7 +248,8 @@ while (( object_index < object_count )); do
       ;;
     file)
       declare does_file_exist=""
-      declare -a current_files=( ${current_object["content"]} )
+      current_files=( $(eval echo ${current_object["content"]}) )
+      echo "${current_files[@]}"
       for current_file in $current_files; do
         if [[ -e "$current_file" ]]; then
           does_file_exist="y"
