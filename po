@@ -264,7 +264,24 @@ while (( object_index < object_count )); do
       fi
       ;;
     keywords)
-      :
+      kw_event_pattern="${current_object["period"]}*${current_object["content"]}*"
+      event_results=( $(eval echo $kw_event_pattern) )
+      kw_project_pattern="${PO_PATH}/proj/*${current_object["content"]}*"
+      project_results=( $(eval echo $kw_project_pattern) )
+      kw_hidden_project_pattern="${PO_PATH}/.hidden_proj/*${current_object["content"]}*"
+      hidden_project_results=( $(eval echo $kw_hidden_project_pattern) )
+      
+      echo "--------- search results --------"
+      for event_result in "${event_results[@]}"; do
+        echo "$event_result"
+      done
+      for project_result in "${project_results[@]}"; do
+        echo "$project_result"
+      done
+      for hidden_project_result in "${hidden_project_results[@]}"; do
+        echo "$hidden_project_result"
+      done
+      echo "---------------------------------"
       ;;
     disk)
       :
