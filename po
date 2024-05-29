@@ -290,7 +290,15 @@ while (( object_index < object_count )); do
       echo "---------------------------------"
       ;;
     disk)
-      :
+      if [[ -d "${current_object["content"]}" ]]; then
+        if [[ "${current_object}" == "backup" ]]; then
+           
+        else
+
+        fi
+      else
+        echo "path doesn't exist: ${current_object["content"]}"
+      fi
       ;;
   esac
 done
