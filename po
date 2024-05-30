@@ -2,7 +2,7 @@
 #==========================================#
 #                 poshd                    #
 #  https://github.com/ponyofshadows/poshd  #
-#              version 0.2                 #
+#              version 0.3                 #
 #==========================================#
 set -e
 export PO_PATH="$HOME/tmp/test/all"
@@ -182,16 +182,14 @@ while (( object_index < object_count )); do
           echo "event was created earlier today: ${current_object["time"]}${current_object["content"]}"
           if [[ -n "${current_object["path"]}" ]]; then
             mkdir -p "${event_floder}/${current_object["path"]}"
-            event_paths+=("${event_path}/${current_object["path"]}")
           fi
+          event_paths+=("${event_floder}/${current_object["path"]}")
         fi
       else 
         if [[ "${current_object["remove"]}" == "" ]]; then
           mkdir -p "${PO_PATH}/event/${current_object["time"]}${current_object["content"]}/${current_object["path"]}"
           echo "new event: ${current_object["time"]}${current_object["content"]}"
-          if [[ -n "${current_object["path"]}" ]]; then
-            event_paths+=("${PO_PATH}/event/${current_object["time"]}${current_object["content"]}/${current_object["path"]}")
-          fi
+          event_paths+=("${PO_PATH}/event/${current_object["time"]}${current_object["content"]}/${current_object["path"]}")
         fi
       fi
       ;;
@@ -234,7 +232,7 @@ while (( object_index < object_count )); do
         echo "create project: ${current_object["content"]}"
       fi
 
-      if [[ (-n "${current_object["path"]}") && ( -n "$proj_current_status") ]]; then
+      if [[ -n "$proj_current_status" ]]; then
         if [[ "$proj_current_status" == "active" ]]; then
           mkdir -p "${proj_floder}/${current_object["path"]}"
           proj_paths+=("${proj_floder}/${current_object["path"]}")
@@ -247,9 +245,7 @@ while (( object_index < object_count )); do
     file)
       declare does_file_exist=""
       current_files=( $(eval echo ${current_object["content"]}) )
-      echo "${current_files[@]}"
       for current_file in "${current_files[@]}"; do
-        echo "$current_file"
         if [[ -e "$current_file" ]]; then
           does_file_exist="y"
           if [[ "${current_object["remove"]}" == "y" ]]; then
@@ -307,7 +303,7 @@ while (( object_index < object_count )); do
 done
 
 # DEBUG{
-if [[ -n "PO_DEBUG" ]]; then
+if [[ -n "$PO_DEBUG" ]]; then
   echo "*** File Paths ***"
   for file_path in "${file_paths[@]}"; do
     echo "$file_path"
