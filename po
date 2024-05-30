@@ -41,7 +41,8 @@ if [[ "$#" == 0 ]]; then
   # equivalent to option "po -l:m"
   current_object["type"]="keywords"
   current_object["period"]=$(po_period "m")
-  object_list+=("${current_object}")
+  object_key_list+=("${!current_object[@]}")
+  object_value_list+=("${current_object[@]}")
 else
   for arg in "$@"; do
     if [[ ! "$arg" == -* ]]; then
@@ -304,4 +305,21 @@ while (( object_index < object_count )); do
       ;;
   esac
 done
+
+# DEBUG{
+if [[ -n "PO_DEBUG" ]]; then
+  echo "*** File Paths ***"
+  for file_path in "${file_paths[@]}"; do
+    echo "$file_path"
+  done
+  echo "*** Event Paths ***"
+  for event_path in "${event_paths[@]}"; do
+    echo "$event_path"
+  done
+  echo "*** Proj Paths ***"
+  for proj_path in "${proj_paths[@]}"; do
+    echo "$proj_path"
+  done
+fi
+# }DEBUG
 
