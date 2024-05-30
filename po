@@ -292,12 +292,14 @@ while (( object_index < object_count )); do
     disk)
       if [[ -d "${current_object["content"]}" ]]; then
         if [[ "${current_object}" == "backup" ]]; then
-          rsync ""           
-        else
-
+          # `-a` = `-rlptgoD`; you can't use `-g`,`-o` or `D` unless you are root 
+          rsync -rlpt -cuHE -v --progress --delete --exclude=".hidden_proj/"  "$PO_PATH" "${current_object["content"]}"    
+          rsync -rlpt -cuHE -v --progress "${PO_PATH}/.hidden_proj" "${current_object["content"]}/.hidden_proj" 
+        else # == "recover"
+          rsync -rlpt -cuHE -v --progress "${current_object["content"]}" "$PO_PATH"
         fi
       else
-        echo "path doesn't exist: ${current_object["content"]}"
+        echo "path doesn't exist: ${current_object["content"]}" >&2 
       fi
       ;;
   esac
