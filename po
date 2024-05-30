@@ -319,3 +319,21 @@ if [[ -n "$PO_DEBUG" ]]; then
 fi
 # }DEBUG
 
+if [[ -n "${file_paths[@]}" ]]; then
+  if [[ -n "${event_paths[@]}" ]]; then
+    if [[ -n "${proj_paths[@]}" ]]; then
+      # file->proj/--(hard link)--event/
+      :
+    else
+      # file->event/
+      :
+    fi
+  elif [[ -n "${proj_paths[@]}" ]]; then
+    # file->proj/
+    :
+  fi
+elif [[ -n "${event_paths[@]}" && -n "${proj_paths[@]}" ]]; then
+  # proj_file--(hard link)--event/
+  :
+fi
+
