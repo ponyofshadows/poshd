@@ -142,6 +142,7 @@ declare -a current_object_values
 
 declare -a event_paths
 declare -a proj_paths
+declare -a proj_file_paths
 declare -a file_paths
 
 object_count=${#object_key_list[@]} 
@@ -334,7 +335,7 @@ if [[ -n "${file_paths[@]}" ]]; then
         for proj_path in "${proj_paths[@]:1}"; do
           ln "$moved_file" "$proj_path"
         done
-        for event_path in "${event_paths[@]}" do
+        for event_path in "${event_paths[@]}"; do
           ln "$moved_file" "$event_path"
         done
       done
@@ -368,7 +369,7 @@ if [[ -n "${file_paths[@]}" ]]; then
       done
     done
   fi
-elif [[ -n "${event_paths[@]}" && -n "${proj_paths[@]}" ]]; then
+elif [[ -n "${event_paths[@]}" && -n "${proj_file_paths[@]}" ]]; then
   # proj_file--(hard link)--event/
   :
 fi
