@@ -6,6 +6,7 @@
 #==========================================#
 set -e
 export PO_PATH="/tmp/test/all"
+mkdir -p "$PO_PATH"
 
 . lib/object.sh
 . lib/time.sh
@@ -306,8 +307,10 @@ while (( object_index < object_count )); do
           # `-a` = `-rlptgoD`; you can't use `-g`,`-o` or `D` unless you are root 
           rsync -rlpt -cuHE -v --progress --delete --exclude=".hidden_proj/"  "$PO_PATH" "${current_object["content"]}"    
           rsync -rlpt -cuHE -v --progress "${PO_PATH}/.hidden_proj" "${current_object["content"]}/.hidden_proj" 
+          echo "BACKUP COMPLETE: ${PO_PATH}->${current_object[content]}"
         else # == "recover"
           rsync -rlpt -cuHE -v --progress --exclude=".hidden_proj/" "${current_object["content"]}" "$PO_PATH"
+          echo "RECOVER COMPLETE: ${current_object[content]}->${PO_PATH}"
         fi
       else
         echo "path doesn't exist: ${current_object["content"]}" >&2 
