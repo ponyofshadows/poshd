@@ -10,10 +10,8 @@ A simple way to record life and archive files based on Linux Shell
 ## Example Path Tree
 ```
 all/
-|__ event/                            ##
+|__ event/                           ##
     |__ 24051809event1/              ## Date&Time + EventTitle
-    |__ 24051813event2@proj1/        ## There exist hard links
-    |__ 24051821event3@proj1@proj2/  ##
 |__ proj/                            ##
     |__ proj1/                       ##
 |__ .hidden_proj/                    ##
