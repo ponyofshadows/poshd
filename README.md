@@ -82,7 +82,7 @@ po -f ~/Downloads/example.png -e:play vedio game
 po -f ~/Downloads/example.png -e:-2h play vedio game/screentshots/
 po -f ~/Downloads/example.png -p master plan/resources/img/
 ## from projects to events, create hard link
-po play vedio game -p master plan/resources/img/*
+po play vedio game -p:file master plan/resources/img/*
 
 #
 # Backup

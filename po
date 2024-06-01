@@ -182,15 +182,17 @@ while (( object_index < object_count )); do
         else
           echo "event was created earlier today: ${current_object["time"]}${current_object["content"]}"
           if [[ -n "${current_object["path"]}" ]]; then
-            mkdir -p "${event_floder}/${current_object["path"]}"
+            declare -a current_event_paths=( $(eval echo ${event_floder}/${current_object["path"]}) )
+            mkdir -p "${current_event_paths[@]}"
           fi
-          event_paths+=("${event_floder}/${current_object["path"]}")
+          event_paths+=("${current_event_paths[@]}")
         fi
       else 
         if [[ "${current_object["remove"]}" == "" ]]; then
-          mkdir -p "${PO_PATH}/event/${current_object["time"]}${current_object["content"]}/${current_object["path"]}"
+          declare -a current_event_paths=( $(eval echo ${PO_PATH}/event/${current_object["time"]}${current_object["content"]}/${current_object["path"]}) )
+          mkdir -p "${current_event_paths[@]}"
           echo "new event: ${current_object["time"]}${current_object["content"]}"
-          event_paths+=("${PO_PATH}/event/${current_object["time"]}${current_object["content"]}/${current_object["path"]}")
+          event_paths+=("${current_event_paths[@]}")
         fi
       fi
       ;;
@@ -234,11 +236,23 @@ while (( object_index < object_count )); do
       fi
       if [[ -n "$proj_current_status" ]]; then
         if [[ "$proj_current_status" == "active" ]]; then
-          mkdir -p "${proj_floder}/${current_object["path"]}"
-          proj_paths+=("${proj_floder}/${current_object["path"]}")
-        else
-          mkdir -p "${hidden_proj_floder}/${current_object["path"]}"
-          proj_paths+=("${hidden_proj_floder}/${current_object["path"]}")
+          if [[ "${current_object["status"]}" == "file" ]]; then
+            declare -a current_proj_files=( $(eval echo ${proj_floder}/${current_object["path"]}) )
+            proj_file_paths+=( "${current_proj_files[@]}" )
+          else
+            declare -a current_proj_paths=( $(eval echo ${proj_floder}/${current_object["path"]}) )
+            mkdir -p "${current_proj_paths[@]}"
+            proj_paths+=( "${current_proj_paths[@]}" )
+          fi
+        else # == hide
+          if [[ "${current_object["status"]}" == "file" ]]; then
+            declare -a current_proj_files=( $(eval echo ${hidden_proj_floder}/${current_object["path"]}) )
+            proj_file_paths+=( "${current_proj_files[@]}" )
+          else
+            declare -a current_proj_paths=( $(eval echo ${hidden_proj_floder}/${current_object["path"]}) )
+            mkdir -p "${current_proj_paths[@]}"
+            proj_paths+=( "${current_proj_paths[@]}" )
+          fi
         fi
       fi
       ;;
