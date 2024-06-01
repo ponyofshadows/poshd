@@ -232,7 +232,6 @@ while (( object_index < object_count )); do
         proj_current_status="active"
         echo "create project: ${current_object["content"]}"
       fi
-
       if [[ -n "$proj_current_status" ]]; then
         if [[ "$proj_current_status" == "active" ]]; then
           mkdir -p "${proj_floder}/${current_object["path"]}"
@@ -294,7 +293,7 @@ while (( object_index < object_count )); do
           rsync -rlpt -cuHE -v --progress --delete --exclude=".hidden_proj/"  "$PO_PATH" "${current_object["content"]}"    
           rsync -rlpt -cuHE -v --progress "${PO_PATH}/.hidden_proj" "${current_object["content"]}/.hidden_proj" 
         else # == "recover"
-          rsync -rlpt -cuHE -v --progress "${current_object["content"]}" "$PO_PATH"
+          rsync -rlpt -cuHE -v --progress --exclude=".hidden_proj/" "${current_object["content"]}" "$PO_PATH"
         fi
       else
         echo "path doesn't exist: ${current_object["content"]}" >&2 
@@ -371,6 +370,18 @@ if [[ -n "${file_paths[@]}" ]]; then
   fi
 elif [[ -n "${event_paths[@]}" && -n "${proj_file_paths[@]}" ]]; then
   # proj_file--(hard link)--event/
-  :
+  unset moved_files
+  declare -a moved_files
+  for proj_file_path in "${proj_file_paths[@]}"; do
+    mv "$proj_file_path" "${event_paths[0]}" 
+    moved_file="${event_paths[0]}/$(basename "$proj_file_path")"
+    moved_files+=(moved_file)
+  done
+  for moved_file in "${moved_files[@]}"; do
+    for event_path in "${event_paths[@]:1}"; do
+      ln "$moved_file" "$event_path"
+    done
+  done
 fi
+
 
