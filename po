@@ -5,7 +5,7 @@
 #              version 0.4                 #
 #==========================================#
 set -e
-export PO_PATH="$HOME/tmp/test/all"
+export PO_PATH="/tmp/test/all"
 
 . lib/object.sh
 . lib/time.sh
@@ -178,9 +178,9 @@ while (( object_index < object_count )); do
         current_object["time"]=$(echo "$event_floder" | sed -n 's/.*event\/\([0-9]\{8\}\).*/\1/p')
         if [[ -n "${current_object["remove"]}" ]]; then
           rm -rf "$event_floder"
-          echo "event deleted: ${current_object["time"]}${current_object["content"]}"
+          echo "event deleted: ${event_floder}"
         else
-          echo "event was created earlier today: ${current_object["time"]}${current_object["content"]}"
+          echo "event was created earlier today: ${event_floder}"
           if [[ -n "${current_object["path"]}" ]]; then
             declare -a current_event_paths=( $(eval echo ${event_floder}/${current_object["path"]}) )
             mkdir -p "${current_event_paths[@]}"
