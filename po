@@ -2,7 +2,7 @@
 #==========================================#
 #                 poshd                    #
 #  https://github.com/ponyofshadows/poshd  #
-#              version 0.3                 #
+#              version 0.4                 #
 #==========================================#
 set -e
 export PO_PATH="$HOME/tmp/test/all"
