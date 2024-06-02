@@ -395,5 +395,3 @@ elif [[ -n "${event_paths[@]}" && -n "${proj_file_paths[@]}" ]]; then
     done
   done
 fi
-
-
