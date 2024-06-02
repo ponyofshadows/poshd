@@ -5,11 +5,12 @@
 #              version 1.0                 #
 #==========================================#
 set -e
-export PO_PATH="${HOME}/all"
+PO_PATH="${HOME}/all"
 mkdir -p "$PO_PATH"
 
-. lib/object.sh
-. lib/time.sh
+SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
+. "${SCRIPT_DIR}/lib/object.sh"
+. "${SCRIPT_DIR}/lib/time.sh"
 
 # ----------------
 ## Strategies for Parsing Parameters
