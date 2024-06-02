@@ -279,7 +279,7 @@ while (( object_index < object_count )); do
       fi
       ;;
     keywords)
-      kw_event_pattern="${PO_PATH}/event/${current_object["period"]}${current_object["content"]}*"
+      kw_event_pattern="${PO_PATH}/event/${current_object["period"]}*${current_object["content"]}*"
       event_results=( $(eval echo $kw_event_pattern) )
       kw_project_pattern="${PO_PATH}/proj/*${current_object["content"]}*"
       project_results=( $(eval echo $kw_project_pattern) )
