@@ -5,7 +5,7 @@
 #              version 1.0                 #
 #==========================================#
 set -e
-export PO_PATH="/tmp/test/all"
+export PO_PATH="${HOME}/all"
 mkdir -p "$PO_PATH"
 
 . lib/object.sh
