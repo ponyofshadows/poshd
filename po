@@ -207,6 +207,7 @@ while (( object_index < object_count )); do
         echo "project exists: ${current_object["content"]}"
         if [[ "${current_object["remove"]}" ==  "y" ]]; then
           rm -rf "$proj_floder"
+          proj_current_status=""
           echo "deleted project: ${current_object["content"]}"
         elif [[ "${current_object[status]}" == "hide" ]]; then
           mv "$proj_floder" "$hidden_proj_floder"
@@ -218,6 +219,7 @@ while (( object_index < object_count )); do
         echo "hidden project exists: ${current_object["content"]}"
         if [[ "${current_object["remove"]}" ==  "y" ]]; then
           rm -rf "$hidden_proj_floder"
+          proj_current_status=""
           echo "deleted hidden project: ${current_object["content"]}"
         elif [[ "${current_object[status]}" == "active" ]]; then
           mv "$hidden_proj_floder" "$proj_floder"
@@ -345,7 +347,7 @@ if [[ -n "${file_paths[@]}" ]]; then
       for file_path in "${file_paths[@]}"; do
        mv "$file_path" "${proj_paths[0]}" 
        moved_file="${proj_paths[0]}/$(basename "$file_path")"
-       moved_files+=(moved_file)
+       moved_files+=( "$moved_file" )
       done
       for moved_file in "${moved_files[@]}"; do
         for proj_path in "${proj_paths[@]:1}"; do
@@ -362,7 +364,7 @@ if [[ -n "${file_paths[@]}" ]]; then
       for file_path in "${file_paths[@]}"; do
         mv "$file_path" "${event_paths[0]}" 
         moved_file="${event_paths[0]}/$(basename "$file_path")"
-        moved_files+=(moved_file)
+        moved_files+=( "$moved_file" )
       done
       for moved_file in "${moved_files[@]}"; do
         for event_path in "${event_paths[@]:1}"; do
@@ -377,7 +379,7 @@ if [[ -n "${file_paths[@]}" ]]; then
     for file_path in "${file_paths[@]}"; do
       mv "$file_path" "${proj_paths[0]}" 
       moved_file="${proj_paths[0]}/$(basename "$file_path")"
-      moved_files+=(moved_file)
+      moved_files+=( "$moved_file" )
     done
     for moved_file in "${moved_files[@]}"; do
       for proj_path in "${proj_paths[@]:1}"; do
@@ -387,16 +389,9 @@ if [[ -n "${file_paths[@]}" ]]; then
   fi
 elif [[ -n "${event_paths[@]}" && -n "${proj_file_paths[@]}" ]]; then
   # proj_file--(hard link)--event/
-  unset moved_files
-  declare -a moved_files
   for proj_file_path in "${proj_file_paths[@]}"; do
-    mv "$proj_file_path" "${event_paths[0]}" 
-    moved_file="${event_paths[0]}/$(basename "$proj_file_path")"
-    moved_files+=(moved_file)
-  done
-  for moved_file in "${moved_files[@]}"; do
-    for event_path in "${event_paths[@]:1}"; do
-      ln "$moved_file" "$event_path"
+    for event_path in "${event_paths[@]}"; do
+      ln "$proj_file_path" "$event_path"
     done
   done
 fi
