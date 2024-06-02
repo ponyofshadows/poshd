@@ -2,7 +2,7 @@
 #==========================================#
 #                 poshd                    #
 #  https://github.com/ponyofshadows/poshd  #
-#              version 0.4                 #
+#              version 1.0                 #
 #==========================================#
 set -e
 export PO_PATH="/tmp/test/all"
@@ -305,7 +305,7 @@ while (( object_index < object_count )); do
       ;;
     disk)
       if [[ -d "${current_object["content"]}" ]]; then
-        if [[ "${current_object}" == "backup" ]]; then
+        if [[ "${current_object["action"]}" == "backup" ]]; then
           # `-a` = `-rlptgoD`; you can't use `-g`,`-o` or `D` unless you are root 
           rsync -rlpt -cuHE -v --progress --delete --exclude=".hidden_proj/"  "$PO_PATH" "${current_object["content"]}"    
           rsync -rlpt -cuHE -v --progress "${PO_PATH}/.hidden_proj" "${current_object["content"]}/.hidden_proj" 
