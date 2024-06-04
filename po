@@ -41,10 +41,12 @@ PO_DEBUG=""
 
 if [[ "$#" == 0 ]]; then
   # equivalent to option "po -l:m"
+  PO_DEBUG="on"
   current_object["type"]="keywords"
   current_object["period"]=$(po_period "m")
-  object_key_list+=("${!current_object[@]}")
-  object_value_list+=("${current_object[@]}")
+  object_count=${#object_key_list[@]}
+  object_key_list[$object_count]="${!current_object[@]}"
+  object_value_list[$object_count]="${current_object[@]}"
 else
   for arg in "$@"; do
     if [[ ! "$arg" == -* ]]; then
