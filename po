@@ -41,7 +41,6 @@ PO_DEBUG=""
 
 if [[ "$#" == 0 ]]; then
   # equivalent to option "po -l:m"
-  PO_DEBUG="on"
   current_object["type"]="keywords"
   current_object["period"]=$(po_period "m")
   object_count=${#object_key_list[@]}
