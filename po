@@ -282,28 +282,11 @@ while (( object_index < object_count )); do
     keywords)
       kw_event_pattern="${PO_PATH}/event/${current_object["period"]}*${current_object["content"]}*"
       event_results=( $(eval echo $kw_event_pattern) )
-      kw_project_pattern="${PO_PATH}/proj/*${current_object["content"]}*"
-      project_results=( $(eval echo $kw_project_pattern) )
-      kw_hidden_project_pattern="${PO_PATH}/.hidden_proj/*${current_object["content"]}*"
-      hidden_project_results=( $(eval echo $kw_hidden_project_pattern) )
-      
-      echo "--------- search results --------"
       if [[ -d "${event_results[0]}" ]]; then
         for event_result in "${event_results[@]}"; do
           echo "$event_result"
         done
       fi
-      if [[ -d "${project_results[0]}" ]]; then
-        for project_result in "${project_results[@]}"; do
-          echo "$project_result"
-        done
-      fi
-      if [[ -d "${hidden_project_results[0]}" ]]; then
-        for hidden_project_result in "${hidden_project_results[@]}"; do
-          echo "$hidden_project_result"
-        done
-      fi
-      echo "---------------------------------"
       ;;
     disk)
       if [[ -d "${current_object["content"]}" ]]; then
