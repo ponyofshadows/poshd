@@ -76,6 +76,7 @@ po -p:restore shadow plan
 # Archive Files
 #
 ## from normal path, move the file
+## Don't use blanks in filename!
 po -f ~/Downloads/example.png -e:play vedio game
 po -f ~/Downloads/example.png -e:-2h play vedio game/screentshots/
 po -f ~/Downloads/example.png -p master plan/resources/img/
