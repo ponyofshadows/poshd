@@ -10,7 +10,7 @@ mkdir -p "$PO_PATH"
 #
 ## object func
 #
-po_complete_object(){
+_po_complete_object(){
   if [[ -n "$current_content" ]]; then
     if [[ "${current_object["type"]}" == "event" || "${current_object["type"]}" == "project" ]]; then
       # title
@@ -46,7 +46,7 @@ po_complete_object(){
 #
 ## time func
 #
-po_date(){
+_po_date(){
   local formatted_time=$(date +'%y%m%d%H')
   local time_code_queue=$1
   local current_time_code=""
@@ -139,8 +139,8 @@ po_date(){
   echo "$formatted_time"
 }
 
-po_period(){
-  local current_time=$(po_date "")
+_po_period(){
+  local current_time=$(_po_date "")
   local period
   case "$1" in
     H)
@@ -204,7 +204,7 @@ po() {
   if [[ "$#" == 0 ]]; then
     # equivalent to option "po -l:m"
     current_object["type"]="keywords"
-    current_object["period"]=$(po_period "m")
+    current_object["period"]=$(_po_period "m")
     object_count=${#object_key_list[@]}
     object_key_list[$object_count]="${!current_object[@]}"
     object_value_list[$object_count]="${current_object[@]}"
@@ -220,14 +220,14 @@ po() {
       else  
         # 2. If current arg is a option
         # |__ 1) complete last object
-        po_complete_object
+        _po_complete_object
         # |__ 2) Specific operations
         case "$arg" in
           -e*)
             current_object["type"]="event"
             current_object["time"]="${arg#*-e}"
             current_object["time"]="${current_object["time"]#*:}"
-            current_object["time"]=$(po_date "${current_object["time"]}")
+            current_object["time"]=$(_po_date "${current_object["time"]}")
             ;;
           -p*)
             current_object["type"]="project"
@@ -244,7 +244,7 @@ po() {
             current_object["type"]="keywords"
             raw_period="${arg#*-l}"
             raw_period="${raw_period#*:}"
-            current_object["period"]=$(po_period "$raw_period")
+            current_object["period"]=$(_po_period "$raw_period")
             ;;
           --rm)
             current_object["remove"]="y"
@@ -282,7 +282,7 @@ po() {
       # }DEBUG
     done
     # one more thing
-    po_complete_object
+    _po_complete_object
   fi
   # DEBUG{
   if [[ -n "$PO_DEBUG" ]]; then
@@ -334,7 +334,7 @@ po() {
       event)
         # Time
         if [[ "${current_object["time"]}" == "" ]]; then
-          current_object["time"]=$(po_date "")
+          current_object["time"]=$(_po_date "")
         fi
         # Does this event exist? 
         event_floders=( ${PO_PATH}/event/${current_object["time"]:0:6}[0-9][0-9]${current_object["content"]} )
