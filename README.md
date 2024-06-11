@@ -16,7 +16,7 @@ all/
     |__ proj1/                       ##
 |__ .hidden_proj/                    ##
     |__ proj2/                       ## Deleting a hidden proj will not affect its backups on other disks
-|__ bin/                             ## some softwares
+|__ local/                             ## some softwares
 ```
 
 ## Usage
