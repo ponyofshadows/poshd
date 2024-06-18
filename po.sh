@@ -458,6 +458,7 @@ po() {
             rsync -rlpt -uHE --progress "${PO_PATH}/.hidden_proj" "${current_object["content"]}/.hidden_proj" 
             echo "BACKUP COMPLETE: ${PO_PATH}->${current_object[content]}/"
           else # == "recover"
+            mkdir -p ~/all/.hidden_proj
             rsync -rlpt -uHE --progress --exclude=".hidden_proj/" "${current_object["content"]}" $(dirname "$PO_PATH")
             echo "RECOVER COMPLETE: ${current_object[content]}/->${PO_PATH}"
           fi
